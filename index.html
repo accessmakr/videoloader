@@ -2,6 +2,9 @@
 
 
 
+
+
+
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -355,9 +358,19 @@
     <script>
         // ====================== HELPER FUNCTIONS ======================
         const API_ENDPOINTS = [
-            "https://co.wuk.sh",
-            "https://api.cobalt.tools"
-        ];
+    "https://co.wuk.sh",
+    "https://api.cobalt.tools",
+    "https://kityune.imput.net",
+    "https://nachos.imput.net",
+    "https://sunny.imput.net",
+    "https://blossom.imput.net",
+    "https://capi.3kh0.net",
+    "https://cobalt-api.hyper.lol",
+    "https://cobalt.api.timelessnesses.me",
+    "https://api-dl.cgm.rs",
+    "https://co.tskau.team",
+    "https://api.co.rooot.gay"
+];
         const slugify = (str = '') => str.toString().toLowerCase().trim()
             .replace(/[^a-z0-9\s-]/g, '')
             .replace(/\s+/g, '-')
@@ -482,17 +495,18 @@
         }
         // ====================== CORE FUNCTIONS ======================
         async function handlePaste() {
-            try {
-                const text = await navigator.clipboard.readText();
-                currentUrl = extractUrl(text) || text;
-                urlInput.value = currentUrl;
-                updateInputBorder();
-                updateSubmitButton();
-                hideError();
-            } catch {
-                addToast("Clipboard blocked — paste manually.");
-            }
-        }
+    try {
+        const text = await navigator.clipboard.readText();
+        currentUrl = extractUrl(text) || text;
+        urlInput.value = currentUrl;
+        updateInputBorder();
+        updateSubmitButton();
+        hideError();
+    } catch (err) {
+        console.error("Clipboard API blocked:", err);
+        addToast("Clipboard access denied by browser. Ctrl+V (or Cmd+V) the link directly into the box above.");
+    }
+}
         function handleCancel() {
             if (abortController) abortController.abort();
             loading = false;
