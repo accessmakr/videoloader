@@ -1,0 +1,12 @@
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Background: rounded rectangle -->
+  <rect width="512" height="512" rx="120" fill="#1e40af"></rect>
+  
+  <!-- Play triangle -->
+  <path d="M200 160 L380 256 L200 352 Z" fill="#ffffff"></path>
+  
+  <!-- Download arrow -->
+  <rect x="380" y="300" width="50" height="80" fill="#ffffff"></rect>
+  <line x1="390" y1="340" x2="430" y2="340" stroke="#ffffff" stroke-width="28" stroke-linecap="round"></line>
+</svg>

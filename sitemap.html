@@ -1,0 +1,46 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitemap | VideoLoader</title>
+    <meta name="description" content="Complete sitemap of VideoLoader - all pages, tools, and legal documents.">
+    <link rel="canonical" href="https://intelreap.com/sitemap" />
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap'); body{font-family:'Inter',sans-serif;}</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 transition-colors duration-300 text-slate-900 dark:text-slate-100">
+    <main class="max-w-6xl mx-auto px-6 py-16">
+        <h1 class="text-5xl font-extrabold tracking-tight mb-8 text-center">Sitemap</h1>
+        
+        <div id="sitemap-grid" class="grid md:grid-cols-3 gap-6"></div>
+    </main>
+
+    <script>
+        // Dynamic sitemap render
+        document.addEventListener('DOMContentLoaded', () => {
+            const registry = window.siteRegistry || [];
+            const grid = document.getElementById('sitemap-grid');
+            grid.innerHTML = registry.map(page => `
+                <a href="/${page.slug}" class="block p-8 bg-white dark:bg-slate-800 rounded-3xl hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <p class="font-bold text-xl">${page.title}</p>
+                    <p class="text-sm text-slate-500 mt-2">${page.type}</p>
+                </a>
+            `).join('');
+        });
+    </script>
+
+    <!-- GLOBAL SHARED SCRIPTS -->
+    <script src="/js/registry.js"></script>
+    <script src="/js/root-config.js"></script>
+    <script src="/js/menu-system.js"></script>
+    <script src="/js/search-system.js"></script>
+    <script src="/js/schema.js"></script>
+    <script src="/js/internal-links.js"></script>
+    <script src="/js/legal-engine.js"></script>
+</body>
+</html>

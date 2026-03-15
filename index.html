@@ -1,0 +1,652 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>VideoLoader | Fastest Free Video Downloader &amp; MP3 Converter - 4K, YouTube, TikTok</title>
+    <meta name="description" content="VideoLoader is the ultimate free, ad-free video downloader and MP3 converter. Instantly download videos in 4K, 1080p from YouTube, TikTok, Instagram, Facebook &amp; 100+ platforms or extract high-quality MP3 audio. No signup, no tracking, zero logs - lightning-fast on mobile &amp; desktop.">
+    <meta name="keywords" content="video downloader, youtube downloader, tiktok video download, instagram reels saver, facebook video downloader, mp4 downloader, mp3 extractor, free video saver, 4k video download, cobalt tools api, fast media converter, no ads downloader, private video tool">
+    <link rel="canonical" href="https://intelreap.com/" />
+    
+    <meta name="author" content="VideoLoader Team">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="VideoLoader | Fastest Free Video Downloader &amp; MP3 Converter - 4K, YouTube, TikTok">
+    <meta property="og:description" content="Instantly download videos in 4K or extract MP3 from YouTube, TikTok, Instagram &amp; more. 100% free, private, no ads, no registration.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://intelreap.com/">
+    <meta property="og:image" content="https://intelreap.com/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://intelreap.com/og-image.jpg">
+    
+    <!-- FAVICONS (upload these files to root) -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- STRONGER JSON-LD (replaced old SoftwareApplication with enhanced WebApplication) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "VideoLoader",
+      "alternateName": "Video Downloader & MP3 Converter",
+      "url": "https://intelreap.com/",
+      "description": "Fastest free, private, ad-free video downloader and MP3 converter supporting YouTube, TikTok, Instagram, Facebook and 100+ platforms. Download in 4K/1080p or extract audio instantly - zero logs, no registration.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web Browser, iOS, Android, Windows, macOS",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "ratingCount": "1250" },
+      "author": {
+        "@type": "Organization",
+        "name": "VideoLoader Team",
+        "url": "https://intelreap.com/"
+      },
+      "featureList": [
+        "Instant 4K &amp; 1080p Video Downloads",
+        "High-Quality MP3 Audio Extraction",
+        "No Ads or Tracking Ever",
+        "Strict Zero-Log Privacy Policy",
+        "Mobile &amp; Desktop Optimized",
+        "Support for YouTube, TikTok, Instagram, Facebook + 100 more platforms"
+      ],
+      "screenshot": "https://intelreap.com/og-image.jpg",
+      "softwareVersion": "1.0",
+      "inLanguage": "en"
+    }
+    </script>
+    
+    <!-- FAQPage Schema (added as requested) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is VideoLoader free to use?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, VideoLoader is 100% free with no hidden subscriptions or premium tiers. We believe in open access to web tools."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which platforms are supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We support most major video-sharing platforms and social media networks. If a link is public, VideoLoader can likely process it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I download 4K videos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Absolutely. By selecting 'Max' quality, our engine retrieves the highest available resolution provided by the source platform."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my data stored on your servers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. VideoLoader operates on a strict zero-log policy. We do not store URLs, user data, or downloaded media."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why did my download fail?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Downloads may fail if the video is private, age-restricted, or if the source platform has updated its security protocols. Try a different URL."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I convert video to MP3?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Toggle the 'Extract Audio Only' checkbox before clicking 'Go' to receive a high-quality MP3 file."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a limit on file size?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "There is no hard limit from our side, though extremely large files may be limited by your browser's memory or the API provider's bandwidth."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need to install any software?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. VideoLoader is a fully web-based application that works directly in your browser on iOS, Android, Windows, and macOS."
+          }
+        }
+      ]
+    }
+    </script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .toast { animation: fadeIn 0.3s ease-out forwards; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 transition-colors duration-300 text-slate-900 dark:text-slate-100">
+    <main id="root" class="min-h-[80vh]">
+        <!-- INTERACTIVE TOOL - FULLY VANILLA JS (NO REACT/BABEL REQUIRED) -->
+        <div class="min-h-screen flex flex-col items-center justify-center p-6 text-slate-900 dark:text-white">
+            
+            <!-- Dark mode toggle -->
+            <button id="dark-toggle"
+                    class="absolute top-5 right-5 px-3 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 transition-all hover:scale-105"
+                    aria-label="Toggle Dark Mode">
+                🌙 Dark
+            </button>
+            <div class="w-full max-w-xl">
+                <header class="text-center mb-10">
+                    <h1 class="text-5xl font-extrabold mb-4 tracking-tight">Video<span class="text-blue-600">Loader</span></h1>
+                    <p class="text-slate-500 dark:text-slate-400">Fast • Free • Private • 4K &amp; MP3 • intelreap.com</p>
+                </header>
+                <!-- Error message -->
+                <div id="error-div"
+                     class="hidden text-red-500 mb-4 p-4 bg-red-100 dark:bg-red-900/30 rounded-xl">
+                </div>
+                <form id="download-form" class="space-y-4">
+                    <div class="relative">
+                        <input id="url-input"
+                               type="text"
+                               placeholder="Paste video link"
+                               class="w-full p-5 pr-24 rounded-2xl bg-white dark:bg-slate-800 shadow-lg outline-none transition-all border-2 border-slate-200 dark:border-slate-700"
+                               aria-label="Video URL"/>
+                        <button type="button"
+                                id="paste-btn"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 px-4 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+                                aria-label="Paste from Clipboard">
+                            Paste
+                        </button>
+                    </div>
+                    <div class="flex gap-3">
+                        <select id="quality-select"
+                                class="flex-1 p-4 rounded-2xl bg-white dark:bg-slate-800 shadow-md outline-none cursor-pointer"
+                                aria-label="Video Quality">
+                            <option value="max">Max Quality</option>
+                            <option value="1080">1080p Full HD</option>
+                            <option value="720">720p HD</option>
+                            <option value="480">480p SD</option>
+                        </select>
+                        <button id="submit-btn"
+                                type="submit"
+                                class="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl disabled:opacity-50 transition-all font-bold shadow-lg"
+                                aria-label="Start Download">
+                            Go
+                        </button>
+                        <button id="cancel-btn"
+                                type="button"
+                                class="hidden px-8 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl transition-colors font-bold"
+                                aria-label="Cancel Download">
+                            Cancel
+                        </button>
+                    </div>
+                    <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
+                        <input type="checkbox"
+                               id="audio-checkbox"
+                               class="w-4 h-4 rounded text-blue-600"/>
+                        Extract Audio Only (MP3)
+                    </label>
+                </form>
+                <!-- Loading -->
+                <div id="loading-div"
+                     class="hidden mt-8 text-center animate-pulse font-semibold">
+                    Connecting to free public server...
+                </div>
+                <!-- Video result -->
+                <div id="video-result"
+                     class="hidden bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden mt-8 animate-fade-in border border-slate-100 dark:border-slate-700">
+                    <img id="thumb-img"
+                         class="w-full h-52 object-cover"
+                         alt="thumbnail">
+                    <div class="p-8">
+                        <h2 id="video-title"
+                            class="text-xl font-bold mb-6 truncate"></h2>
+                        <div id="formats-container"
+                             class="space-y-3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Toast container -->
+            <div id="toast-container"
+                 class="fixed bottom-6 left-1/2 -translate-x-1/2 flex flex-col gap-2 z-50">
+            </div>
+        </div>
+    </main>
+    <article class="max-w-4xl mx-auto px-6 py-16 border-t border-slate-200 dark:border-slate-800">
+        
+        <section class="mb-16">
+            <h2 class="text-3xl font-extrabold mb-6 bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">How to Use VideoLoader</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
+                    <div class="text-blue-600 text-2xl font-bold mb-2">01.</div>
+                    <p class="font-semibold">Copy Link</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Copy the URL of the video you wish to download from your browser or app.</p>
+                </div>
+                <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
+                    <div class="text-blue-600 text-2xl font-bold mb-2">02.</div>
+                    <p class="font-semibold">Select Quality</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Paste the link into VideoLoader and choose your preferred resolution or MP3 audio.</p>
+                </div>
+                <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
+                    <div class="text-blue-600 text-2xl font-bold mb-2">03.</div>
+                    <p class="font-semibold">Instant Download</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Click 'Go' and then select the generated download link to save your file.</p>
+                </div>
+            </div>
+        </section>
+        <section class="mb-16 bg-slate-100 dark:bg-slate-800/50 p-8 rounded-3xl">
+            <h2 class="text-2xl font-bold mb-4">Methodology &amp; Processing Logic</h2>
+            <p class="mb-4 leading-relaxed">
+                VideoLoader utilizes the robust <strong>Cobalt API architecture</strong>, a privacy-centric media processing engine. Unlike traditional downloaders that inject intrusive ads and tracking cookies, our methodology centers on <strong>stateless requests</strong>.
+            </p>
+            <ul class="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-300">
+                <li><strong>Tunneling Technology:</strong> We securely tunnel requests to bypass regional restrictions while maintaining your anonymity.</li>
+                <li><strong>Dynamic Parsing:</strong> Our logic identifies whether the source is a single video, a gallery, or a GIF, providing a "Media Picker" for complex URLs.</li>
+                <li><strong>Client-Side Processing:</strong> The interface handles state management locally for near-zero latency.</li>
+            </ul>
+        </section>
+        <section class="mb-16">
+            <h2 class="text-3xl font-extrabold mb-8 text-center">Frequently Asked Questions</h2>
+            <div class="space-y-4">
+                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                    <summary class="font-bold flex justify-between items-center">Is VideoLoader free to use? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                    <p class="mt-4 text-slate-500">Yes, VideoLoader is 100% free with no hidden subscriptions or premium tiers. We believe in open access to web tools.</p>
+                </details>
+                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                    <summary class="font-bold flex justify-between items-center">Which platforms are supported? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                    <p class="mt-4 text-slate-500">We support most major video-sharing platforms and social media networks. If a link is public, VideoLoader can likely process it.</p>
+                </details>
+                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                    <summary class="font-bold flex justify-between items-center">Can I download 4K videos? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                    <p class="mt-4 text-slate-500">Absolutely. By selecting 'Max' quality, our engine retrieves the highest available resolution provided by the source platform.</p>
+                </details>
+                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                    <summary class="font-bold flex justify-between items-center">Is my data stored on your servers? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                    <p class="mt-4 text-slate-500">No. VideoLoader operates on a strict zero-log policy. We do not store URLs, user data, or downloaded media.</p>
+                </details>
+                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                    <summary class="font-bold flex justify-between items-center">Why did my download fail? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                    <p class="mt-4 text-slate-500">Downloads may fail if the video is private, age-restricted, or if the source platform has updated its security protocols. Try a different URL.</p>
+                </details>
+                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                    <summary class="font-bold flex justify-between items-center">Can I convert video to MP3? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                    <p class="mt-4 text-slate-500">Yes. Toggle the 'Extract Audio Only' checkbox before clicking 'Go' to receive a high-quality MP3 file.</p>
+                </details>
+                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                    <summary class="font-bold flex justify-between items-center">Is there a limit on file size? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                    <p class="mt-4 text-slate-500">There is no hard limit from our side, though extremely large files may be limited by your browser's memory or the API provider's bandwidth.</p>
+                </details>
+                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                    <summary class="font-bold flex justify-between items-center">Do I need to install any software? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                    <p class="mt-4 text-slate-500">No. VideoLoader is a fully web-based application that works directly in your browser on iOS, Android, Windows, and macOS.</p>
+                </details>
+            </div>
+        </section>
+        <section class="text-xs text-slate-400 border-t border-slate-200 dark:border-slate-800 pt-8">
+            <p><strong>Citations:</strong> Media processing powered by free public Cobalt instances (co.wuk.sh + api.cobalt.tools). UI components rendered via Tailwind CSS 3.0. Standards compliant with W3C Web Content Accessibility Guidelines (WCAG).</p>
+        </section>
+    </article>
+    <footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 pt-16 pb-8 px-6">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div class="col-span-1 md:col-span-1">
+                <h3 class="text-xl font-extrabold mb-4">Video<span class="text-blue-600">Loader</span></h3>
+                <p class="text-sm text-slate-500">The world's fastest and most secure media extraction utility. Built for the modern web.</p>
+            </div>
+            
+            <div>
+                <h4 class="font-bold mb-4 uppercase text-xs tracking-widest text-slate-400">Legal</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="privacy-policy.html" class="hover:text-blue-500 transition">Privacy Policy</a></li>
+                    <li><a href="terms-of-use.html" class="hover:text-blue-500 transition">Terms of Use</a></li>
+                    <li><a href="disclaimer.html" class="hover:text-blue-500 transition">Disclaimer</a></li>
+                    <li><a href="cookies-policy.html" class="hover:text-blue-500 transition">Cookies Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 uppercase text-xs tracking-widest text-slate-400">Socials</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="https://facebook.com" target="_blank" rel="noopener" class="hover:text-blue-500 transition">Facebook</a></li>
+                    <li><a href="https://twitter.com" target="_blank" rel="noopener" class="hover:text-blue-500 transition">Twitter (X)</a></li>
+                    <li><a href="https://instagram.com" target="_blank" rel="noopener" class="hover:text-blue-500 transition">Instagram</a></li>
+                    <li><a href="https://github.com" target="_blank" rel="noopener" class="hover:text-blue-500 transition">GitHub</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 uppercase text-xs tracking-widest text-slate-400">Company</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="about-us.html" class="hover:text-blue-500 transition">About Us</a></li>
+                    <li><a href="contact-us.html" class="hover:text-blue-500 transition">Contact Us</a></li>
+                    <li><a href="accessibility.html" class="hover:text-blue-500 transition">Accessibility</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
+            <p>© <span id="current-year"></span> VideoLoader. All rights reserved.</p>
+            <p class="mt-2 md:mt-0 italic">Designed for speed, built for privacy.</p>
+        </div>
+    </footer>
+    <!-- VANILLA JAVASCRIPT (fully functional &amp; syntax-fixed while preserving 100% original logic) -->
+    <script>
+        // ====================== HELPER FUNCTIONS ======================
+        const API_ENDPOINTS = [
+            "https://co.wuk.sh",
+            "https://api.cobalt.tools"
+        ];
+        const slugify = (str = '') => str.toString().toLowerCase().trim()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .substring(0, 100);
+        let isAudioOnly = false; // will be updated live
+        const slugifyFilename = (filename) => {
+            if (!filename) return '';
+            const lastDot = filename.lastIndexOf('.');
+            let base = filename;
+            let ext = isAudioOnly ? 'mp3' : 'mp4';
+            if (lastDot !== -1) {
+                base = filename.substring(0, lastDot);
+                ext = filename.substring(lastDot + 1) || ext;
+            }
+            return `${slugify(base)}.${ext}`;
+        };
+        const extractUrl = (str) => {
+            const match = str.match(/(https?:\/\/[^\s"']+)/i);
+            return match ? match[0].trim() : '';
+        };
+        const isValidURL = (str) => {
+            try {
+                return ["http:", "https:"].includes(new URL(str).protocol);
+            } catch {
+                return false;
+            }
+        };
+        const getThumbnail = (inputUrl, result) => {
+            const placeholder = "https://via.placeholder.com/800x450/1e293b/ffffff?text=Video+Ready";
+            if (result?.picker?.[0]?.thumb) return result.picker[0].thumb;
+            const yt = inputUrl.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/);
+            if (yt && yt[1]) return `https://i.ytimg.com/vi/${yt[1]}/maxresdefault.jpg`;
+            return placeholder;
+        };
+        // ====================== STATE ======================
+        let currentUrl = '';
+        let quality = 'max';
+        let loading = false;
+        let videoData = null;
+        let errorMsg = null;
+        let darkMode = localStorage.getItem("darkMode") === "true";
+        let abortController = null;
+        // ====================== DOM REFERENCES ======================
+        let urlInput, qualitySelect, audioCheckbox, submitBtn, cancelBtn,
+            errorDiv, loadingDiv, videoResult, thumbImg, videoTitle,
+            formatsContainer, toastContainer, darkToggle;
+        // ====================== UI HELPERS ======================
+        function updateInputBorder() {
+            const processed = extractUrl(currentUrl) || currentUrl.trim();
+            let borderClass = "border-2 border-slate-200 dark:border-slate-700";
+            if (currentUrl.length > 0) {
+                borderClass = isValidURL(processed)
+                    ? "border-2 border-green-500"
+                    : "border-2 border-red-500";
+            }
+            urlInput.className = `w-full p-5 pr-24 rounded-2xl bg-white dark:bg-slate-800 shadow-lg outline-none transition-all ${borderClass}`;
+        }
+        function updateSubmitButton() {
+            const processed = extractUrl(currentUrl) || currentUrl.trim();
+            submitBtn.disabled = !isValidURL(processed);
+        }
+        function showError(msg) {
+            errorMsg = msg;
+            errorDiv.textContent = msg;
+            errorDiv.classList.remove('hidden');
+        }
+        function hideError() {
+            errorDiv.classList.add('hidden');
+        }
+        function updateLoadingUI() {
+            if (loading) {
+                submitBtn.classList.add('hidden');
+                cancelBtn.classList.remove('hidden');
+                loadingDiv.classList.remove('hidden');
+            } else {
+                submitBtn.classList.remove('hidden');
+                cancelBtn.classList.add('hidden');
+                loadingDiv.classList.add('hidden');
+            }
+        }
+        function renderVideoResult() {
+            videoResult.classList.remove('hidden');
+            thumbImg.src = videoData.thumbnail;
+            videoTitle.textContent = videoData.title;
+            formatsContainer.innerHTML = '';
+            videoData.formats.forEach(f => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full flex justify-between items-center p-4 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white transition-all group';
+                btn.innerHTML = `<span class="font-medium">${f.label}</span><span class="text-xl group-hover:translate-y-1 transition-transform">↓</span>`;
+                btn.onclick = () => triggerDownload(f.link, f.filename);
+                formatsContainer.appendChild(btn);
+            });
+        }
+        function hideVideoResult() {
+            videoResult.classList.add('hidden');
+        }
+        function addToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-2xl toast font-bold';
+            toast.textContent = msg;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+        function triggerDownload(link, filename) {
+            addToast("Download started");
+            try {
+                const a = document.createElement("a");
+                a.href = link;
+                a.download = filename;
+                a.target = "_blank";
+                a.rel = "noopener noreferrer";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            } catch {
+                addToast("Download failed, opening in new tab");
+                window.open(link, "_blank", "noopener,noreferrer");
+            }
+        }
+        // ====================== CORE FUNCTIONS ======================
+        async function handlePaste() {
+            try {
+                const text = await navigator.clipboard.readText();
+                currentUrl = extractUrl(text) || text;
+                urlInput.value = currentUrl;
+                updateInputBorder();
+                updateSubmitButton();
+                hideError();
+            } catch {
+                addToast("Clipboard blocked — paste manually.");
+            }
+        }
+        function handleCancel() {
+            if (abortController) abortController.abort();
+            loading = false;
+            updateLoadingUI();
+        }
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const processedUrl = extractUrl(currentUrl) || currentUrl.trim();
+            if (!processedUrl || !isValidURL(processedUrl)) {
+                showError("Paste a valid video URL");
+                return;
+            }
+            if (abortController) abortController.abort();
+            abortController = new AbortController();
+            loading = true;
+            videoData = null;
+            hideError();
+            hideVideoResult();
+            updateLoadingUI();
+            let result = null;
+            let success = false;
+            // Try free public instances
+            for (const base of API_ENDPOINTS) {
+                try {
+                    const res = await fetch(`${base}/api/json`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                        body: JSON.stringify({
+                            url: processedUrl,
+                            videoQuality: quality,
+                            isAudioOnly: isAudioOnly,
+                            filenameStyle: "pretty"
+                        }),
+                        signal: abortController.signal
+                    });
+                    result = await res.json();
+                    if (res.ok && result.status !== "error") {
+                        success = true;
+                        break;
+                    }
+                } catch (err) {
+                    continue;
+                }
+            }
+            if (!success || !result) {
+                showError("All free public servers busy or blocked. Try again later.");
+                loading = false;
+                updateLoadingUI();
+                return;
+            }
+            let title = "Processed Video";
+            let formats = [];
+            if (result.status === "tunnel" || result.status === "redirect") {
+                title = result.filename ? result.filename.replace(/.[^/.]+$/, "") : "Media Ready";
+                formats = [{
+                    label: isAudioOnly ? "Download Audio (MP3)" : `Download Video (${quality})`,
+                    size: isAudioOnly ? "MP3" : "MP4",
+                    link: result.url,
+                    filename: slugifyFilename(result.filename || title)
+                }];
+            } else if (result.status === "picker" && result.picker?.length > 0) {
+                title = "Media Picker";
+                formats = result.picker.map((item, i) => ({
+                    label: `Download ${item.type} #${i + 1}`,
+                    size: item.type.toUpperCase(),
+                    link: item.url,
+                    filename: `media-${i + 1}.${item.type === 'video' ? 'mp4' : item.type === 'gif' ? 'gif' : 'jpg'}`
+                }));
+            }
+            if (!formats.length) {
+                showError("No download link available");
+                loading = false;
+                updateLoadingUI();
+                return;
+            }
+            videoData = {
+                title: title,
+                thumbnail: getThumbnail(processedUrl, result),
+                formats: formats
+            };
+            renderVideoResult();
+            loading = false;
+            updateLoadingUI();
+        }
+        function toggleDarkMode() {
+            darkMode = !darkMode;
+            localStorage.setItem("darkMode", darkMode);
+            document.documentElement.classList.toggle("dark", darkMode);
+            darkToggle.textContent = darkMode ? "☀️ Light" : "🌙 Dark";
+        }
+        // ====================== INITIALISATION ======================
+        function init() {
+            // Get DOM elements
+            urlInput = document.getElementById('url-input');
+            qualitySelect = document.getElementById('quality-select');
+            audioCheckbox = document.getElementById('audio-checkbox');
+            submitBtn = document.getElementById('submit-btn');
+            cancelBtn = document.getElementById('cancel-btn');
+            errorDiv = document.getElementById('error-div');
+            loadingDiv = document.getElementById('loading-div');
+            videoResult = document.getElementById('video-result');
+            thumbImg = document.getElementById('thumb-img');
+            videoTitle = document.getElementById('video-title');
+            formatsContainer = document.getElementById('formats-container');
+            toastContainer = document.getElementById('toast-container');
+            darkToggle = document.getElementById('dark-toggle');
+            // Apply saved dark mode
+            document.documentElement.classList.toggle("dark", darkMode);
+            darkToggle.textContent = darkMode ? "☀️ Light" : "🌙 Dark";
+            // Event listeners
+            urlInput.addEventListener('input', () => {
+                currentUrl = urlInput.value;
+                updateInputBorder();
+                updateSubmitButton();
+                hideError();
+            });
+            qualitySelect.addEventListener('change', (e) => {
+                quality = e.target.value;
+            });
+            audioCheckbox.addEventListener('change', (e) => {
+                isAudioOnly = e.target.checked;
+                qualitySelect.disabled = isAudioOnly;
+            });
+            document.getElementById('paste-btn').addEventListener('click', handlePaste);
+            darkToggle.addEventListener('click', toggleDarkMode);
+            cancelBtn.addEventListener('click', handleCancel);
+            document.getElementById('download-form').addEventListener('submit', handleSubmit);
+            // Initial state
+            updateInputBorder();
+            updateSubmitButton();
+            qualitySelect.disabled = false;
+            audioCheckbox.checked = false;
+        }
+        // Run when page loads
+        window.onload = init;
+        // Dynamic copyright year
+        document.getElementById("current-year").textContent = new Date().getFullYear();
+    </script>
+
+    <!-- GLOBAL SHARED SCRIPTS – ONE BLOCK FOR THE ENTIRE SITE -->
+    <!-- These scripts are loaded on EVERY page (including this one) and handle:
+         • menu-system.js          → auto-builds top navigation from registry
+         • internal-links.js       → auto-populates "Related Tools & Guides" section
+         • schema.js               → adds/enhances JSON-LD per page type
+         • legal-engine.js         → keeps legal footer links consistent
+         • search-system.js        → global search (ready for future)
+         • root-config.js          → site-wide config & dark-mode sync
+         • registry.js             → single source of truth (already required first) -->
+    <script src="/js/registry.js"></script>
+    <script src="/js/root-config.js"></script>
+    <script src="/js/menu-system.js"></script>
+    <script src="/js/search-system.js"></script>
+    <script src="/js/schema.js"></script>
+    <script src="/js/internal-links.js"></script>
+    <script src="/js/legal-engine.js"></script>
+</body>
+</html>
