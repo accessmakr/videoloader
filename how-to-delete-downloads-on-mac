@@ -12,10 +12,10 @@
 <meta property="og:title" content="How to Delete Downloads on Mac – Complete Guide | IntelReap">
 <meta property="og:description" content="Step-by-step guide to safely delete downloads on Mac. Includes tips, comparisons, AI automation, and FAQs.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://intelreap.com/delete-downloads-mac.html">
+<meta property="og:url" content="https://intelreap.com/how-to-delete-downloads-on-mac.html">
 <meta property="og:image" content="https://intelreap.com/images/mac-downloads-guide.png">
 
-<link rel="canonical" href="https://intelreap.com/delete-downloads-mac.html">
+<link rel="canonical" href="https://intelreap.com/how-to-delete-downloads-on-mac.html">
 </head>
 <body>
 
@@ -139,7 +139,6 @@ Check Downloads Folder → Identify Unnecessary Files → Backup (Optional) → 
 <pre><code>
 [Start] → [Open Downloads Folder] → [Select Files] → [Move to Trash] → [Empty Trash] → [Check Storage]
 </code></pre>
-<!-- Replace with real diagram image if available -->
 <img src="/images/downloads-flow-diagram.png" alt="Logical flow diagram for cleaning Mac downloads">
 <hr />
 
@@ -174,7 +173,7 @@ Check Downloads Folder → Identify Unnecessary Files → Backup (Optional) → 
   "@type": "FAQPage",
   "mainEntity": [
     {"@type": "Question","name":"Can I recover deleted downloads on Mac?","acceptedAnswer":{"@type":"Answer","text":"Yes, via Trash before emptying, or using Time Machine backup."}},
-    {"@type":"Question","name":"Does deleting downloads improve Mac speed?","acceptedAnswer":{"@type":"Answer","text":"Yes, especially if your Downloads folder contains GBs of files."}},
+    {"@type": "Question","name":"Does deleting downloads improve Mac speed?","acceptedAnswer":{"@type":"Answer","text":"Yes, especially if your Downloads folder contains GBs of files."}},
     {"@type":"Question","name":"Can I automate deletion of downloads?","acceptedAnswer":{"@type":"Answer","text":"Yes, using Automator workflows or cron jobs."}},
     {"@type":"Question","name":"Is it safe to use Terminal commands?","acceptedAnswer":{"@type":"Answer","text":"Only if you type commands carefully. rm -rf can permanently erase important data."}},
     {"@type":"Question","name":"Do browser downloads stay if I delete files from Finder?","acceptedAnswer":{"@type":"Answer","text":"The download record in Chrome or Safari will remain, but the file will be gone."}}
@@ -182,7 +181,10 @@ Check Downloads Folder → Identify Unnecessary Files → Backup (Optional) → 
 }
 </script>
 
-<!-- GLOBAL SCRIPTS -->
+<!-- Footer required for internal-links.js -->
+<footer></footer>
+
+<!-- GLOBAL SCRIPTS – one block -->
 <script src="/js/registry.js"></script>
 <script src="/js/root-config.js"></script>
 <script src="/js/menu-system.js"></script>
