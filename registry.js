@@ -55,13 +55,19 @@ const siteRegistry = [
     priority: 0.5
   },
   {
+    slug: "how-to-delete-downloads-on-mac",
+    title: "How to Delete Downloads on Mac – Complete Guide",
+    type: "guide",
+    priority: 0.7,
+    keywords: ["delete downloads mac", "mac cleanup", "mac storage", "clear downloads folder"]
+  },
+  {
     slug: "sitemap",
     title: "Sitemap",
     type: "utility",
     priority: 0.4
   }
 ];
-
 // Make it available both in browser and in Node (for generate-sitemap.js)
 if (typeof window !== "undefined") {
   window.siteRegistry = siteRegistry;
