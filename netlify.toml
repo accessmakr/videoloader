@@ -1,6 +1,10 @@
+
+
+
 [build]
   command = "node generate-sitemap.js"
   publish = "."
+  environment = { NODE_VERSION = "20" }   # pinned for maximum stability on Netlify
 
 [[headers]]
   for = "/*"
