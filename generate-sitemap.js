@@ -2,10 +2,14 @@
 
 
 const fs = require('fs');
-const registry = require('./js/registry.js');
+const path = require('path');
+
+const registryPath = path.join(__dirname, 'js', 'registry.js');
+const registry = require(registryPath);
 const base = 'https://intelreap.com';
 
-let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+let xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
 registry.forEach(page => {
   const loc = page.slug ? `${base}/${page.slug}` : base;
@@ -14,5 +18,6 @@ registry.forEach(page => {
 });
 
 xml += '</urlset>';
+
 fs.writeFileSync('sitemap.xml', xml);
 console.log(`✅ sitemap.xml generated – ${registry.length} pages`);
