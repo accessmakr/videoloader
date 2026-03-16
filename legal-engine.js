@@ -1,8 +1,7 @@
 
 
-
 // legal-engine.js
-// Automatically rebuilds the Legal footer links from registry (add new legal pages → they appear everywhere instantly)
+// Automatically rebuilds the Legal footer links from registry
 
 function updateLegalFooter() {
     const registry = window.siteRegistry || [];
@@ -15,9 +14,8 @@ function updateLegalFooter() {
     if (!legalUl) return;
 
     legalUl.innerHTML = legalPages.map(p => `
-        <li><a href="/${p.slug}.html" class="hover:text-blue-500 transition">${p.title}</a></li>
+        <li><a href="/${p.slug}" class="hover:text-blue-500 transition">${p.title}</a></li>
     `).join('');
 }
 
 window.addEventListener('load', updateLegalFooter);
-
