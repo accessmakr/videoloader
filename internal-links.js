@@ -2,7 +2,7 @@
 
 
 // internal-links.js
-// Auto-injects "Related Tools & Guides" section on every page (zero manual editing)
+// Auto-injects "Related Tools & Guides" section on every page
 
 function getCurrentSlug() {
     let path = window.location.pathname;
@@ -23,7 +23,7 @@ function addRelatedSection() {
             <h2 class="text-3xl font-extrabold mb-8 text-center">Related Tools &amp; Guides</h2>
             <div class="grid md:grid-cols-3 gap-6">
                 ${related.map(p => `
-                    <a href="/${p.slug || ''}${p.slug ? '.html' : ''}" 
+                    <a href="/${p.slug || ''}" 
                        class="block p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl transition-all">
                         <h3 class="font-semibold">${p.title}</h3>
                     </a>
@@ -41,4 +41,3 @@ function addRelatedSection() {
 }
 
 window.addEventListener('load', addRelatedSection);
-
