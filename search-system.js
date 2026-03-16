@@ -2,7 +2,7 @@
 
 
 // search-system.js
-// Global search (ready for sitemap.html and future header search)
+// Global search (ready for sitemap.html)
 
 function initGlobalSearch() {
     const searchInputs = document.querySelectorAll('[data-search]');
@@ -18,12 +18,11 @@ function initGlobalSearch() {
                 (page.keywords && page.keywords.some(k => k.toLowerCase().includes(term)))
             );
 
-            // For sitemap.html we will update the results div (see sitemap.html below)
             const resultsContainer = document.getElementById('search-results');
             if (resultsContainer) {
                 resultsContainer.innerHTML = matches.length
                     ? matches.map(p => `
-                        <a href="/${p.slug || ''}${p.slug ? '.html' : ''}" 
+                        <a href="/${p.slug || ''}" 
                            class="block p-4 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl">
                             ${p.title}
                         </a>`).join('')
@@ -34,4 +33,3 @@ function initGlobalSearch() {
 }
 
 window.addEventListener('load', initGlobalSearch);
-
