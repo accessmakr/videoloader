@@ -3,71 +3,134 @@
 
 const express = require("express");
 const cors = require("cors");
-const ytdlp = require("youtube-dl-exec");
+const ytdlp = require("youtube-dl-exec").default;
+const fs = require("fs");
 const path = require("path");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-// serve index.html and other static files from the root folder
 app.use(express.static(__dirname));
 
-const cache = {};
-
-// simple test route so Railway homepage doesn't show "Cannot GET /"
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
-// API endpoint
+/*
+======================
+VIDEO INFO (MP4)
+======================
+*/
 app.post("/api/info", async (req, res) => {
-  const { url } = req.body;
-
-  if (!url || !/^https?:\/\//i.test(url)) {
-    return res.status(400).json({ error: "Valid URL required" });
-  }
-
-  if (cache[url]) {
-    console.log("Cache hit for URL:", url);
-    return res.json(cache[url]);
-  }
-
-  console.log("Fetching video info for:", url);
-
   try {
+    const { url } = req.body;
+
+    if (!url) {
+      return res.status(400).json({ error: "No URL provided" });
+    }
+
     const info = await ytdlp(url, {
       dumpSingleJson: true,
       noWarnings: true,
-      youtubeSkipDashManifest: true,
-      maxBuffer: 50 * 1024 * 1024
+      skipDownload: true,
+      preferFreeFormats: true,
+
+      // ⚡ SPEED
+      concurrentFragments: 16,
+
+      // 🔁 STABILITY
+      retries: 3,
+      fragmentRetries: 3,
+
+      // 🌍 PLATFORM SUPPORT (YouTube + TikTok + IG)
+      extractorArgs: [
+        "youtube:player_client=android",
+        "generic:impersonate"
+      ],
+
+      // 🔐 HEADERS (avoid blocking)
+      addHeader: [
+        "referer:youtube.com",
+        "user-agent:Mozilla/5.0"
+      ]
     });
 
     const formats = info.formats
-      .filter(f => f.ext === "mp4" || f.ext === "m4a")
+      .filter(f => f.url && f.ext === "mp4" && f.height)
       .map(f => ({
-        quality: f.format_note || (f.height ? `${f.height}p` : "audio"),
+        quality: `${f.height}p`,
         url: f.url,
         ext: f.ext
-      }));
+      }))
+      .sort((a, b) => parseInt(b.quality) - parseInt(a.quality));
 
-    const responseData = {
+    res.json({
       title: info.title,
       thumbnail: info.thumbnail,
-      duration: info.duration,
       formats
-    };
-
-    cache[url] = responseData;
-    res.json(responseData);
+    });
 
   } catch (err) {
-    console.error("yt-dlp error:", err);
-    res.status(500).json({ error: "Download failed" });
+    console.error("INFO ERROR:", err.stderr || err.message || err);
+
+    res.status(500).json({
+      error: err.stderr || err.message || "Failed to fetch video info"
+    });
   }
 });
 
+/*
+======================
+MP3 DOWNLOAD
+======================
+*/
+app.post("/api/mp3", async (req, res) => {
+  try {
+    const { url } = req.body;
+
+    if (!url) {
+      return res.status(400).json({ error: "No URL provided" });
+    }
+
+    const fileName = `audio-${Date.now()}.mp3`;
+    const filePath = path.join(__dirname, fileName);
+
+    await ytdlp(url, {
+      extractAudio: true,
+      audioFormat: "mp3",
+      output: filePath,
+
+      // ⚡ SPEED
+      concurrentFragments: 16,
+      limitRate: "10M",
+
+      // 🔁 STABILITY
+      retries: 5,
+      fragmentRetries: 5,
+
+      // 🔐 HEADERS
+      addHeader: [
+        "user-agent:Mozilla/5.0"
+      ]
+    });
+
+    res.download(filePath, fileName, () => {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath); // 🧼 cleanup after download
+      }
+    });
+
+  } catch (err) {
+    console.error("MP3 ERROR:", err.stderr || err.message || err);
+
+    res.status(500).json({
+      error: "MP3 conversion failed"
+    });
+  }
+});
+
+/*
+======================
+START SERVER
+======================
+*/
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
