@@ -3,7 +3,7 @@
 
 const express = require("express");
 const cors = require("cors");
-const ytdlp = require("youtube-dl-exec").default;
+const ytdlp = require("youtube-dl-exec");
 const fs = require("fs");
 const path = require("path");
 
@@ -136,3 +136,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
 });
+
