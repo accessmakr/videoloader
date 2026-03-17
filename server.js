@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const ytdlp = require("yt-dlp-exec");
+const ytdlp = require("youtube-dl-exec");   // ←←← CHANGED HERE
 const path = require("path");
 
 const app = express();
@@ -10,15 +10,12 @@ app.use(express.json());
 app.use(express.static("public"));
 
 app.post("/api/info", async (req, res) => {
-
   const { url } = req.body;
-
   if (!url) {
     return res.status(400).json({ error: "URL required" });
   }
 
   try {
-
     const info = await ytdlp(url, {
       dumpSingleJson: true,
       noWarnings: true
@@ -38,15 +35,12 @@ app.post("/api/info", async (req, res) => {
       duration: info.duration,
       formats
     });
-
   } catch (err) {
     res.status(500).json({ error: "Download failed" });
   }
-
 });
 
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
 });
