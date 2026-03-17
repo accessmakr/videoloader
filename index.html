@@ -213,7 +213,7 @@
                 <!-- Loading -->
                 <div id="loading-div"
                      class="hidden mt-8 text-center animate-pulse font-semibold">
-                    Connecting to free public server...
+                    Processing your video... please wait ⚡
                 </div>
                 <!-- Video result -->
                 <div id="video-result"
@@ -446,7 +446,7 @@
             formatsContainer.innerHTML = '';
             videoData.formats.forEach(f => {
                 const btn = document.createElement('button');
-                btn.className = 'w-full flex justify-between items-center p-4 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white transition-all group';
+                btn.className = 'w-full flex justify-between items-center p-4 rounded-xl bg-slate-100 dark:bg-slate-700 hover:bg-blue-600 hover:text-white transition-all font-semibold shadow hover:scale-[1.02]';
                 btn.innerHTML = `<span class="font-medium">${f.label}</span><span class="text-xl group-hover:translate-y-1 transition-transform">↓</span>`;
                 btn.onclick = () => triggerDownload(f.link, f.filename);
                 formatsContainer.appendChild(btn);
@@ -500,78 +500,119 @@
             updateLoadingUI();
         }
         async function handleSubmit(e) {
-            e.preventDefault();
-            const processedUrl = extractUrl(currentUrl) || currentUrl.trim();
-            if (!processedUrl || !isValidURL(processedUrl)) {
-                showError("Paste a valid video URL");
-                return;
-            }
-            if (abortController) abortController.abort();
-            abortController = new AbortController();
-            loading = true;
-            videoData = null;
-            hideError();
-            hideVideoResult();
-            updateLoadingUI();
-            let result = null;
-            // Frontend per-user caching (prevents duplicate calls for same URL)
-            if (processedUrl === lastUrl && lastData) {
-                result = lastData;
-            } else {
+    e.preventDefault();
+
+    const processedUrl = extractUrl(currentUrl) || currentUrl.trim();
+
+    if (!processedUrl || !isValidURL(processedUrl)) {
+        showError("Paste a valid video URL");
+        return;
+    }
+
+    if (abortController) abortController.abort();
+    abortController = new AbortController();
+
+    loading = true;
+    videoData = null;
+    hideError();
+    hideVideoResult();
+    updateLoadingUI();
+
+    let result = null;
+
+    // ✅ KEEP YOUR CACHING (FAST)
+    if (processedUrl === lastUrl && lastData) {
+        result = lastData;
+    } else {
+        try {
+            let endpoint = "/api/info";
+
+// if MP3 mode → use mp3 endpoint
+if (isAudioOnly) {
+    endpoint = "/api/mp3";
+}
+
+const res = await fetch(`${API_ENDPOINTS[0]}${endpoint}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        url: processedUrl
+    }),
+    signal: abortController.signal
+});
+
+            if (!res.ok) {
+                let errorText = `Server error ${res.status}`;
                 try {
-                    const res = await fetch(`${API_ENDPOINTS[0]}/api/info`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ url: processedUrl }),
-                        signal: abortController.signal
-                    });
-                    if (!res.ok) {
-                        let errorText = `Server error ${res.status}`;
-                        try {
-                            const errJson = await res.json();
-                            if (errJson.error) errorText = errJson.error;
-                        } catch {}
-                        throw new Error(errorText);
-                    }
-                    result = await res.json();
-                    if (result.error) throw new Error(result.error);
-                    lastUrl = processedUrl;
-                    lastData = result;
-                } catch (err) {
-                    if (err.name === "AbortError") {
-                        showError("Request canceled");
-                    } else {
-                        showError("Failed to process video. Server may be busy or URL not supported: " + err.message);
-                    }
-                    loading = false;
-                    updateLoadingUI();
-                    return;
-                }
+                    const errJson = await res.json();
+                    if (errJson.error) errorText = errJson.error;
+                } catch {}
+                throw new Error(errorText);
             }
-            let title = result.title || "Processed Video";
-            let formats = [];
-            if (Array.isArray(result.formats) && result.formats.length > 0) {
-                formats = result.formats.map(f => ({
-                    label: f.quality,
-                    link: f.url,
-                    filename: slugifyFilename(title + '.' + f.ext)
-                })).filter(f => f.link);
+
+            // MP3 returns file, not JSON
+if (isAudioOnly) {
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    triggerDownload(url, slugifyFilename("audio.mp3"));
+
+    loading = false;
+    updateLoadingUI();
+    return;
+}
+
+result = await res.json();
+
+            if (result.error) throw new Error(result.error);
+
+            // ✅ cache result
+            lastUrl = processedUrl;
+            lastData = result;
+
+        } catch (err) {
+            if (err.name === "AbortError") {
+                showError("Request canceled");
+            } else {
+                showError("Failed to process video: " + err.message);
             }
-            if (!formats.length) {
-                showError("No download link available");
-                loading = false;
-                updateLoadingUI();
-                return;
-            }
-            videoData = {
-                title: title,
-                thumbnail: result.thumbnail || getThumbnail(processedUrl, result),
-                formats: formats
-            };
-            renderVideoResult();
+
             loading = false;
             updateLoadingUI();
+            return;
         }
+    }
+
+    let title = result.title || "Processed Video";
+
+    let formats = [];
+
+    if (Array.isArray(result.formats) && result.formats.length > 0) {
+        formats = result.formats.map(f => ({
+            label: f.quality || "Download",
+            link: f.url,
+            filename: slugifyFilename(title + '.' + (f.ext || 'mp4'))
+        })).filter(f => f.link);
+    }
+
+    if (!formats.length) {
+        showError("No download link available");
+        loading = false;
+        updateLoadingUI();
+        return;
+    }
+
+    videoData = {
+        title: title,
+        thumbnail: result.thumbnail || getThumbnail(processedUrl, result),
+        formats: formats
+    };
+
+    renderVideoResult();
+
+    loading = false;
+    updateLoadingUI();
+}
         function toggleDarkMode() {
             darkMode = !darkMode;
             localStorage.setItem("darkMode", darkMode);
@@ -608,9 +649,13 @@
                 quality = e.target.value;
             });
             audioCheckbox.addEventListener('change', (e) => {
-                isAudioOnly = e.target.checked;
-                qualitySelect.disabled = isAudioOnly;
-            });
+    isAudioOnly = e.target.checked;
+    qualitySelect.disabled = isAudioOnly;
+
+    if (isAudioOnly) {
+        addToast("MP3 mode enabled 🎵");
+    }
+});
             document.getElementById('paste-btn').addEventListener('click', handlePaste);
             darkToggle.addEventListener('click', toggleDarkMode);
             cancelBtn.addEventListener('click', handleCancel);
@@ -645,3 +690,4 @@
     <script src="/js/legal-engine.js"></script>
 </body>
 </html>
+
