@@ -1,10 +1,6 @@
 
 
 
-
-
-
-
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -358,18 +354,7 @@
     <script>
         // ====================== HELPER FUNCTIONS ======================
         const API_ENDPOINTS = [
-    "https://co.wuk.sh",
-    "https://api.cobalt.tools",
-    "https://kityune.imput.net",
-    "https://nachos.imput.net",
-    "https://sunny.imput.net",
-    "https://blossom.imput.net",
-    "https://capi.3kh0.net",
-    "https://cobalt-api.hyper.lol",
-    "https://cobalt.api.timelessnesses.me",
-    "https://api-dl.cgm.rs",
-    "https://co.tskau.team",
-    "https://api.co.rooot.gay"
+    "https://videoloader-production.up.railway.app"
 ];
         const slugify = (str = '') => str.toString().toLowerCase().trim()
             .replace(/[^a-z0-9\s-]/g, '')
@@ -414,6 +399,8 @@
         let errorMsg = null;
         let darkMode = localStorage.getItem("darkMode") === "true";
         let abortController = null;
+        let lastUrl = '';
+        let lastData = null;
         // ====================== DOM REFERENCES ======================
         let urlInput, qualitySelect, audioCheckbox, submitBtn, cancelBtn,
             errorDiv, loadingDiv, videoResult, thumbImg, videoTitle,
@@ -527,54 +514,48 @@
             hideVideoResult();
             updateLoadingUI();
             let result = null;
-            let success = false;
-            // Try free public instances
-            for (const base of API_ENDPOINTS) {
+            // Frontend per-user caching (prevents duplicate calls for same URL)
+            if (processedUrl === lastUrl && lastData) {
+                result = lastData;
+            } else {
                 try {
-                    const res = await fetch(`${base}/api/json`, {
+                    const res = await fetch(`${API_ENDPOINTS[0]}/api/info`, {
                         method: "POST",
-                        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-                        body: JSON.stringify({
-                            url: processedUrl,
-                            videoQuality: quality,
-                            isAudioOnly: isAudioOnly,
-                            filenameStyle: "pretty"
-                        }),
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ url: processedUrl }),
                         signal: abortController.signal
                     });
-                    result = await res.json();
-                    if (res.ok && result.status !== "error") {
-                        success = true;
-                        break;
+                    if (!res.ok) {
+                        let errorText = `Server error ${res.status}`;
+                        try {
+                            const errJson = await res.json();
+                            if (errJson.error) errorText = errJson.error;
+                        } catch {}
+                        throw new Error(errorText);
                     }
+                    result = await res.json();
+                    if (result.error) throw new Error(result.error);
+                    lastUrl = processedUrl;
+                    lastData = result;
                 } catch (err) {
-                    continue;
+                    if (err.name === "AbortError") {
+                        showError("Request canceled");
+                    } else {
+                        showError("Failed to process video. Server may be busy or URL not supported: " + err.message);
+                    }
+                    loading = false;
+                    updateLoadingUI();
+                    return;
                 }
             }
-            if (!success || !result) {
-                showError("All free public servers busy or blocked. Try again later.");
-                loading = false;
-                updateLoadingUI();
-                return;
-            }
-            let title = "Processed Video";
+            let title = result.title || "Processed Video";
             let formats = [];
-            if (result.status === "tunnel" || result.status === "redirect") {
-                title = result.filename ? result.filename.replace(/.[^/.]+$/, "") : "Media Ready";
-                formats = [{
-                    label: isAudioOnly ? "Download Audio (MP3)" : `Download Video (${quality})`,
-                    size: isAudioOnly ? "MP3" : "MP4",
-                    link: result.url,
-                    filename: slugifyFilename(result.filename || title)
-                }];
-            } else if (result.status === "picker" && result.picker?.length > 0) {
-                title = "Media Picker";
-                formats = result.picker.map((item, i) => ({
-                    label: `Download ${item.type} #${i + 1}`,
-                    size: item.type.toUpperCase(),
-                    link: item.url,
-                    filename: `media-${i + 1}.${item.type === 'video' ? 'mp4' : item.type === 'gif' ? 'gif' : 'jpg'}`
-                }));
+            if (Array.isArray(result.formats) && result.formats.length > 0) {
+                formats = result.formats.map(f => ({
+                    label: f.quality,
+                    link: f.url,
+                    filename: slugifyFilename(title + '.' + f.ext)
+                })).filter(f => f.link);
             }
             if (!formats.length) {
                 showError("No download link available");
@@ -584,7 +565,7 @@
             }
             videoData = {
                 title: title,
-                thumbnail: getThumbnail(processedUrl, result),
+                thumbnail: result.thumbnail || getThumbnail(processedUrl, result),
                 formats: formats
             };
             renderVideoResult();
