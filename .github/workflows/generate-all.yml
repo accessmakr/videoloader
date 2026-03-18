@@ -1,0 +1,35 @@
+
+
+
+name: Auto-generate pages.json + registry.js + sitemap.xml
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "*.html"          # only runs when you add/edit HTML files
+  workflow_dispatch:      # allows you to run manually the first time
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run generator script
+        run: node generate-all.js
+
+      - name: Commit updated files if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/pages.json js/registry.js sitemap.xml
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: auto-update generated files"
+            git push
+          else
+            echo "No changes to commit"
+          fi
