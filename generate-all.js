@@ -11,10 +11,9 @@ const registryFile = "./js/registry.js";
 const sitemapFile = "./sitemap.xml";
 const indexNowKey = "833b2f9ffb7d41ba9ed2ef3ea392d9c1"; // your exact key
 
-// Create data folder if missing
-if (!fs.existsSync("./data")) {
-  fs.mkdirSync("./data");
-}
+// Create folders if missing
+if (!fs.existsSync("./data")) fs.mkdirSync("./data");
+if (!fs.existsSync("./js")) fs.mkdirSync("./js");
 
 // 1. Find all .html files in root
 const allFiles = fs.readdirSync(".")
