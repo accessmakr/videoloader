@@ -1,6 +1,3 @@
-
-
-
 // js/registry.js
 // SINGLE SOURCE OF TRUTH — edit this file ONLY when you add a new page
 
@@ -62,16 +59,23 @@ const siteRegistry = [
     keywords: ["delete downloads mac", "mac cleanup", "mac storage", "clear downloads folder"]
   },
   {
+    slug: "how-to-find-downloads-on-iPhone",
+    title: "How to Find Downloads on iPhone – Complete Guide",
+    type: "guide",
+    priority: 0.7,
+    keywords: ["find downloads iphone", "iphone downloads location", "files app iphone", "safari downloads iphone", "where are downloads iphone"]
+  },
+  {
     slug: "sitemap",
     title: "Sitemap",
     type: "utility",
     priority: 0.4
   }
 ];
+
 // Make it available both in browser and in Node (for generate-sitemap.js)
 if (typeof window !== "undefined") {
   window.siteRegistry = siteRegistry;
 } else {
   module.exports = siteRegistry;
 }
-
