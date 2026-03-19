@@ -1,4 +1,7 @@
+[build]
+  publish = "."  # NO command - generation already done by GitHub workflow
 
-
-
-build] publish = "." # NO command – generation already done by GitHub workflow [[redirects]] from = "/*" to = "/:splat.html" status = 200
+[[redirects]]
+  from = "/*"
+  to = "/:splat.html"
+  status = 200
