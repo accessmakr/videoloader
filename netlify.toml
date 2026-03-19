@@ -1,0 +1,4 @@
+
+
+
+build] publish = "." # NO command – generation already done by GitHub workflow [[redirects]] from = "/*" to = "/:splat.html" status = 200
