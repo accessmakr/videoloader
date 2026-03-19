@@ -7,14 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const infoPages = registry.filter(p => p.type === 'legal' || p.type === 'info');
 
   const navHTML = `
-    ${toolPages.map(p => `<a href="/${p.slug}" class="hover:text-blue-600">${p.title}</a>`).join('')}
-    ${infoPages.map(p => `<a href="/${p.slug}" class="hover:text-blue-600">${p.title}</a>`).join('')}
+    ${toolPages.map(p => `<a href="${p.slug || '/'}" class="hover:text-blue-600 transition-colors">${p.title}</a>`).join('')}
+    ${infoPages.map(p => `<a href="${p.slug || '/'}" class="hover:text-blue-600 transition-colors">${p.title}</a>`).join('')}
   `;
 
   const mainMenu = document.getElementById('main-menu');
   if (mainMenu) mainMenu.innerHTML = navHTML;
 
-  // Mobile
+  // Mobile menu
   const btn = document.getElementById('mobile-menu-btn');
   const mobileDiv = document.getElementById('mobile-menu');
   if (btn && mobileDiv) {
