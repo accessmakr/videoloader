@@ -1,3 +1,6 @@
+
+
+
 /privacy-policy          /privacy-policy.html          200
 /terms-of-use            /terms-of-use.html            200
 /disclaimer              /disclaimer.html              200
@@ -13,5 +16,5 @@
 /css/*         /:splat   200
 /images/*      /:splat   200
 
-# Catch-all — any unknown page goes to your 404
-/*                       /404.html                     404
+# Catch-all for clean URLs on any page (including new ones) is now handled by netlify.toml
+# Netlify will automatically serve your 404.html for any missing page
