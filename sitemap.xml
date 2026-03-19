@@ -1,39 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://intelreap.com/</loc>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://intelreap.com/privacy-policy</loc>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://intelreap.com/terms-of-use</loc>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://intelreap.com/disclaimer</loc>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://intelreap.com/cookies-policy</loc>
+    <loc>https://intelreap.com/404</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://intelreap.com/about-us</loc>
-    <priority>0.6</priority>
-  </url>
-  <url>
-    <loc>https://intelreap.com/contact-us</loc>
-    <priority>0.6</priority>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
     <loc>https://intelreap.com/accessibility</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://intelreap.com/contact-us</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://intelreap.com/cookies-policy</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://intelreap.com/disclaimer</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://intelreap.com/how-to-delete-downloads-on-mac</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://intelreap.com/how-to-find-downloads-on-iPhone</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://intelreap.com</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1</priority>
+  </url>
+  <url>
+    <loc>https://intelreap.com/privacy-policy</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://intelreap.com/sitemap</loc>
-    <priority>0.4</priority>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://intelreap.com/terms-of-use</loc>
+    <lastmod>2026-03-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>

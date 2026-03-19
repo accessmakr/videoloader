@@ -1,5 +1,4 @@
-// AUTO-GENERATED - DO NOT EDIT
-const siteRegistry = [
+[
   {
     "slug": "/404",
     "title": "404",
@@ -102,6 +101,4 @@ const siteRegistry = [
     "lastmod": "2026-03-19",
     "keywords": []
   }
-];
-if (typeof window !== "undefined") window.siteRegistry = siteRegistry;
-else module.exports = siteRegistry;
+]
