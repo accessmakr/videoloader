@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <!-- PAGE-SPECIFIC TITLE & CANONICAL + FULL META (customised for homepage) -->
     <title>VideoLoader | Fastest Free Video Downloader &amp; MP3 Converter - 4K, YouTube, TikTok</title>
     <meta name="description" content="VideoLoader is the ultimate free, ad-free video downloader and MP3 converter. Instantly download videos in 4K, 1080p from YouTube, TikTok, Instagram, Facebook &amp; 100+ platforms or extract high-quality MP3 audio. No signup, no tracking, zero logs - lightning-fast on mobile &amp; desktop.">
     <meta name="keywords" content="video downloader, youtube downloader, tiktok video download, instagram reels saver, facebook video downloader, mp4 downloader, mp3 extractor, free video saver, 4k video download, cobalt tools api, fast media converter, no ads downloader, private video tool">
@@ -14,22 +15,34 @@
     
     <meta name="author" content="VideoLoader Team">
     <meta name="robots" content="index, follow">
-    <meta property="og:title" content="VideoLoader | Fastest Free Video Downloader &amp; MP3 Converter - 4K, YouTube, TikTok">
-    <meta property="og:description" content="Instantly download videos in 4K or extract MP3 from YouTube, TikTok, Instagram &amp; more. 100% free, private, no ads, no registration.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://intelreap.com/">
-    <meta property="og:image" content="https://intelreap.com/og-image.jpg">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="https://intelreap.com/og-image.jpg">
     
-    <!-- FAVICONS (upload these files to root) -->
-    <link rel="icon" href="/favicon.ico" sizes="any">
+    <!-- FAVICONS + FULL OPEN GRAPH + TWITTER CARDS (production-ready) -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     
-    <!-- STRONGER JSON-LD (replaced old SoftwareApplication with enhanced WebApplication) -->
+    <!-- Open Graph -->
+    <meta property="og:title" content="VideoLoader | Fastest Free Video Downloader &amp; MP3 Converter - 4K, YouTube, TikTok">
+    <meta property="og:description" content="Instantly download videos in 4K or extract MP3 from YouTube, TikTok, Instagram &amp; more. 100% free, private, no ads, no registration.">
+    <meta property="og:image" content="https://intelreap.com/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://intelreap.com/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="IntelReap">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="VideoLoader | Fastest Free Video Downloader &amp; MP3 Converter - 4K, YouTube, TikTok">
+    <meta name="twitter:description" content="Instantly download videos in 4K or extract MP3 from YouTube, TikTok, Instagram &amp; more. 100% free, private, no ads, no registration.">
+    <meta name="twitter:image" content="https://intelreap.com/og-image.jpg">
+
+    <!-- Optional but recommended -->
+    <meta name="theme-color" content="#0ea5e9">
+    
+    <link rel="stylesheet" href="/css/styles.css">
+    
+    <!-- STRONGER JSON-LD (enhanced WebApplication) + FAQPage Schema -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -61,7 +74,6 @@
     }
     </script>
     
-    <!-- FAQPage Schema (added as requested) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -135,8 +147,26 @@
     }
     </script>
     
+    <!-- Tailwind CDN (required for original UI fidelity) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Minimal inline styles (new template) + original styles (preserved 100%) -->
     <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        /* Premium container spacing (new template) */
+        .page-container {
+            max-width: 80rem;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        
+        /* ORIGINAL STYLES PRESERVED EXACTLY */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .animate-fade-in { animation: fadeIn 0.5s ease-out; }
@@ -147,26 +177,66 @@
         ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 transition-colors duration-300 text-slate-900 dark:text-slate-100">
-    <main id="root" class="min-h-[80vh]">
-        <!-- INTERACTIVE TOOL - FULLY VANILLA JS (NO REACT/BABEL REQUIRED) -->
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+
+    <!-- HEADER – IntelReap brand + logo icon (site-wide uniform) -->
+    <header id="site-header" class="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="/favicon.svg" alt="IntelReap" class="w-8 h-8">
+                <a href="/" class="text-3xl font-bold tracking-tighter">Intel<span class="text-blue-600">Reap</span> • VideoLoader</a>
+            </div>
+            
+            <!-- STATIC FALLBACK MENU (progressive enhancement) + JS will enhance -->
+            <nav id="main-menu" class="hidden md:flex items-center gap-8 font-medium">
+                <a href="/" class="hover:text-blue-600 transition-colors">Home</a>
+                <a href="/tools" class="hover:text-blue-600 transition-colors">All Tools</a>
+                <a href="/youtube" class="hover:text-blue-600 transition-colors">YouTube</a>
+                <a href="/instagram" class="hover:text-blue-600 transition-colors">Instagram</a>
+                <a href="/blog" class="hover:text-blue-600 transition-colors">Blog</a>
+            </nav>
+            
+            <div id="search-bar-container" class="flex-1 max-w-md mx-6" role="search"></div>
+            
+            <button 
+                id="mobile-menu-btn" 
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                class="md:hidden text-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-1">
+                ☰
+            </button>
+        </div>
+        
+        <!-- Mobile menu container (JS will populate) -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 py-4 bg-white dark:bg-slate-900 border-t"></div>
+    </header>
+
+    <!-- MAIN CONTENT (page-container for uniform spacing + SEO layout) -->
+    <main id="page-content" class="min-h-screen page-container">
+        
+        <!-- === UNIQUE HOMEPAGE CONTENT STARTS HERE (original interactive tool + article preserved exactly) === -->
+        
+        <!-- INTERACTIVE TOOL - FULLY VANILLA JS (original fidelity 100%) -->
         <div class="min-h-screen flex flex-col items-center justify-center p-6 text-slate-900 dark:text-white">
             
-            <!-- Dark mode toggle -->
+            <!-- Dark mode toggle (original) -->
             <button id="dark-toggle"
                     class="absolute top-5 right-5 px-3 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 transition-all hover:scale-105"
                     aria-label="Toggle Dark Mode">
                 🌙 Dark
             </button>
+            
             <div class="w-full max-w-xl">
                 <header class="text-center mb-10">
                     <h1 class="text-5xl font-extrabold mb-4 tracking-tight">Video<span class="text-blue-600">Loader</span></h1>
                     <p class="text-slate-500 dark:text-slate-400">Fast • Free • Private • 4K &amp; MP3 • intelreap.com</p>
                 </header>
+                
                 <!-- Error message -->
                 <div id="error-div"
                      class="hidden text-red-500 mb-4 p-4 bg-red-100 dark:bg-red-900/30 rounded-xl">
                 </div>
+                
                 <form id="download-form" class="space-y-4">
                     <div class="relative">
                         <input id="url-input"
@@ -210,11 +280,13 @@
                         Extract Audio Only (MP3)
                     </label>
                 </form>
+                
                 <!-- Loading -->
                 <div id="loading-div"
                      class="hidden mt-8 text-center animate-pulse font-semibold">
                     Processing your video... please wait ⚡
                 </div>
+                
                 <!-- Video result -->
                 <div id="video-result"
                      class="hidden bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden mt-8 animate-fade-in border border-slate-100 dark:border-slate-700">
@@ -230,127 +302,132 @@
                     </div>
                 </div>
             </div>
+            
             <!-- Toast container -->
             <div id="toast-container"
                  class="fixed bottom-6 left-1/2 -translate-x-1/2 flex flex-col gap-2 z-50">
             </div>
         </div>
+
+        <!-- ORIGINAL ARTICLE CONTENT (how-to, methodology, FAQ, citations - preserved exactly) -->
+        <article class="max-w-4xl mx-auto px-6 py-16 border-t border-slate-200 dark:border-slate-800">
+            
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold mb-6 bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">How to Use VideoLoader</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
+                        <div class="text-blue-600 text-2xl font-bold mb-2">01.</div>
+                        <p class="font-semibold">Copy Link</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Copy the URL of the video you wish to download from your browser or app.</p>
+                    </div>
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
+                        <div class="text-blue-600 text-2xl font-bold mb-2">02.</div>
+                        <p class="font-semibold">Select Quality</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Paste the link into VideoLoader and choose your preferred resolution or MP3 audio.</p>
+                    </div>
+                    <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
+                        <div class="text-blue-600 text-2xl font-bold mb-2">03.</div>
+                        <p class="font-semibold">Instant Download</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Click 'Go' and then select the generated download link to save your file.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="mb-16 bg-slate-100 dark:bg-slate-800/50 p-8 rounded-3xl">
+                <h2 class="text-2xl font-bold mb-4">Methodology &amp; Processing Logic</h2>
+                <p class="mb-4 leading-relaxed">
+                    VideoLoader utilizes the robust <strong>Cobalt API architecture</strong>, a privacy-centric media processing engine. Unlike traditional downloaders that inject intrusive ads and tracking cookies, our methodology centers on <strong>stateless requests</strong>.
+                </p>
+                <ul class="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-300">
+                    <li><strong>Tunneling Technology:</strong> We securely tunnel requests to bypass regional restrictions while maintaining your anonymity.</li>
+                    <li><strong>Dynamic Parsing:</strong> Our logic identifies whether the source is a single video, a gallery, or a GIF, providing a "Media Picker" for complex URLs.</li>
+                    <li><strong>Client-Side Processing:</strong> The interface handles state management locally for near-zero latency.</li>
+                </ul>
+            </section>
+            
+            <section class="mb-16">
+                <h2 class="text-3xl font-extrabold mb-8 text-center">Frequently Asked Questions</h2>
+                <div class="space-y-4">
+                    <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                        <summary class="font-bold flex justify-between items-center">Is VideoLoader free to use? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                        <p class="mt-4 text-slate-500">Yes, VideoLoader is 100% free with no hidden subscriptions or premium tiers. We believe in open access to web tools.</p>
+                    </details>
+                    <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                        <summary class="font-bold flex justify-between items-center">Which platforms are supported? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                        <p class="mt-4 text-slate-500">We support most major video-sharing platforms and social media networks. If a link is public, VideoLoader can likely process it.</p>
+                    </details>
+                    <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                        <summary class="font-bold flex justify-between items-center">Can I download 4K videos? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                        <p class="mt-4 text-slate-500">Absolutely. By selecting 'Max' quality, our engine retrieves the highest available resolution provided by the source platform.</p>
+                    </details>
+                    <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                        <summary class="font-bold flex justify-between items-center">Is my data stored on your servers? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                        <p class="mt-4 text-slate-500">No. VideoLoader operates on a strict zero-log policy. We do not store URLs, user data, or downloaded media.</p>
+                    </details>
+                    <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                        <summary class="font-bold flex justify-between items-center">Why did my download fail? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                        <p class="mt-4 text-slate-500">Downloads may fail if the video is private, age-restricted, or if the source platform has updated its security protocols. Try a different URL.</p>
+                    </details>
+                    <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                        <summary class="font-bold flex justify-between items-center">Can I convert video to MP3? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                        <p class="mt-4 text-slate-500">Yes. Toggle the 'Extract Audio Only' checkbox before clicking 'Go' to receive a high-quality MP3 file.</p>
+                    </details>
+                    <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                        <summary class="font-bold flex justify-between items-center">Is there a limit on file size? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                        <p class="mt-4 text-slate-500">There is no hard limit from our side, though extremely large files may be limited by your browser's memory or the API provider's bandwidth.</p>
+                    </details>
+                    <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
+                        <summary class="font-bold flex justify-between items-center">Do I need to install any software? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
+                        <p class="mt-4 text-slate-500">No. VideoLoader is a fully web-based application that works directly in your browser on iOS, Android, Windows, and macOS.</p>
+                    </details>
+                </div>
+            </section>
+            
+            <section class="text-xs text-slate-400 border-t border-slate-200 dark:border-slate-800 pt-8">
+                <p><strong>Citations:</strong> Media processing powered by free public Cobalt instances (co.wuk.sh + api.cobalt.tools). UI components rendered via Tailwind CSS 3.0. Standards compliant with W3C Web Content Accessibility Guidelines (WCAG).</p>
+            </section>
+        </article>
+
     </main>
-    <article class="max-w-4xl mx-auto px-6 py-16 border-t border-slate-200 dark:border-slate-800">
-        
-        <section class="mb-16">
-            <h2 class="text-3xl font-extrabold mb-6 bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">How to Use VideoLoader</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
-                    <div class="text-blue-600 text-2xl font-bold mb-2">01.</div>
-                    <p class="font-semibold">Copy Link</p>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">Copy the URL of the video you wish to download from your browser or app.</p>
-                </div>
-                <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
-                    <div class="text-blue-600 text-2xl font-bold mb-2">02.</div>
-                    <p class="font-semibold">Select Quality</p>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">Paste the link into VideoLoader and choose your preferred resolution or MP3 audio.</p>
-                </div>
-                <div class="p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-sm">
-                    <div class="text-blue-600 text-2xl font-bold mb-2">03.</div>
-                    <p class="font-semibold">Instant Download</p>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">Click 'Go' and then select the generated download link to save your file.</p>
-                </div>
-            </div>
-        </section>
-        <section class="mb-16 bg-slate-100 dark:bg-slate-800/50 p-8 rounded-3xl">
-            <h2 class="text-2xl font-bold mb-4">Methodology &amp; Processing Logic</h2>
-            <p class="mb-4 leading-relaxed">
-                VideoLoader utilizes the robust <strong>Cobalt API architecture</strong>, a privacy-centric media processing engine. Unlike traditional downloaders that inject intrusive ads and tracking cookies, our methodology centers on <strong>stateless requests</strong>.
-            </p>
-            <ul class="list-disc pl-5 space-y-2 text-slate-600 dark:text-slate-300">
-                <li><strong>Tunneling Technology:</strong> We securely tunnel requests to bypass regional restrictions while maintaining your anonymity.</li>
-                <li><strong>Dynamic Parsing:</strong> Our logic identifies whether the source is a single video, a gallery, or a GIF, providing a "Media Picker" for complex URLs.</li>
-                <li><strong>Client-Side Processing:</strong> The interface handles state management locally for near-zero latency.</li>
-            </ul>
-        </section>
-        <section class="mb-16">
-            <h2 class="text-3xl font-extrabold mb-8 text-center">Frequently Asked Questions</h2>
-            <div class="space-y-4">
-                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
-                    <summary class="font-bold flex justify-between items-center">Is VideoLoader free to use? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
-                    <p class="mt-4 text-slate-500">Yes, VideoLoader is 100% free with no hidden subscriptions or premium tiers. We believe in open access to web tools.</p>
-                </details>
-                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
-                    <summary class="font-bold flex justify-between items-center">Which platforms are supported? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
-                    <p class="mt-4 text-slate-500">We support most major video-sharing platforms and social media networks. If a link is public, VideoLoader can likely process it.</p>
-                </details>
-                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
-                    <summary class="font-bold flex justify-between items-center">Can I download 4K videos? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
-                    <p class="mt-4 text-slate-500">Absolutely. By selecting 'Max' quality, our engine retrieves the highest available resolution provided by the source platform.</p>
-                </details>
-                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
-                    <summary class="font-bold flex justify-between items-center">Is my data stored on your servers? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
-                    <p class="mt-4 text-slate-500">No. VideoLoader operates on a strict zero-log policy. We do not store URLs, user data, or downloaded media.</p>
-                </details>
-                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
-                    <summary class="font-bold flex justify-between items-center">Why did my download fail? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
-                    <p class="mt-4 text-slate-500">Downloads may fail if the video is private, age-restricted, or if the source platform has updated its security protocols. Try a different URL.</p>
-                </details>
-                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
-                    <summary class="font-bold flex justify-between items-center">Can I convert video to MP3? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
-                    <p class="mt-4 text-slate-500">Yes. Toggle the 'Extract Audio Only' checkbox before clicking 'Go' to receive a high-quality MP3 file.</p>
-                </details>
-                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
-                    <summary class="font-bold flex justify-between items-center">Is there a limit on file size? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
-                    <p class="mt-4 text-slate-500">There is no hard limit from our side, though extremely large files may be limited by your browser's memory or the API provider's bandwidth.</p>
-                </details>
-                <details class="group bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm cursor-pointer">
-                    <summary class="font-bold flex justify-between items-center">Do I need to install any software? <span class="group-open:rotate-180 transition-transform">↓</span></summary>
-                    <p class="mt-4 text-slate-500">No. VideoLoader is a fully web-based application that works directly in your browser on iOS, Android, Windows, and macOS.</p>
-                </details>
-            </div>
-        </section>
-        <section class="text-xs text-slate-400 border-t border-slate-200 dark:border-slate-800 pt-8">
-            <p><strong>Citations:</strong> Media processing powered by free public Cobalt instances (co.wuk.sh + api.cobalt.tools). UI components rendered via Tailwind CSS 3.0. Standards compliant with W3C Web Content Accessibility Guidelines (WCAG).</p>
-        </section>
-    </article>
-    <footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 pt-16 pb-8 px-6">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-            <div class="col-span-1 md:col-span-1">
-                <h3 class="text-xl font-extrabold mb-4">Video<span class="text-blue-600">Loader</span></h3>
-                <p class="text-sm text-slate-500">The world's fastest and most secure media extraction utility. Built for the modern web.</p>
+
+    <!-- FOOTER – site-wide uniform -->
+    <footer id="site-footer" class="bg-slate-900 text-slate-400 py-16">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-12">
+            <div>
+                <h4 class="text-white font-semibold mb-4">Legal</h4>
+                <!-- STATIC FALLBACK LINKS (progressive enhancement) -->
+                <ul id="footer-menu" class="space-y-2">
+                    <li><a href="/privacy-policy" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="/terms-of-service" class="hover:text-white transition-colors">Terms of Service</a></li>
+                    <li><a href="/dmca" class="hover:text-white transition-colors">DMCA</a></li>
+                    <li><a href="/contact" class="hover:text-white transition-colors">Contact</a></li>
+                </ul>
             </div>
             
             <div>
-                <h4 class="font-bold mb-4 uppercase text-xs tracking-widest text-slate-400">Legal</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="privacy-policy.html" class="hover:text-blue-500 transition">Privacy Policy</a></li>
-                    <li><a href="terms-of-use.html" class="hover:text-blue-500 transition">Terms of Use</a></li>
-                    <li><a href="disclaimer.html" class="hover:text-blue-500 transition">Disclaimer</a></li>
-                    <li><a href="cookies-policy.html" class="hover:text-blue-500 transition">Cookies Policy</a></li>
-                </ul>
+                <h4 class="text-white font-semibold mb-4">Connect</h4>
+                <!-- STATIC FALLBACK SOCIAL ICONS (JS can replace or add more) -->
+                <div id="footer-social-links" class="flex gap-6 text-2xl">
+                    <a href="https://twitter.com/intelreap" aria-label="Twitter" class="hover:text-white transition-colors">𝕏</a>
+                    <a href="https://facebook.com/intelreap" aria-label="Facebook" class="hover:text-white transition-colors">📘</a>
+                    <a href="https://instagram.com/intelreap" aria-label="Instagram" class="hover:text-white transition-colors">📸</a>
+                </div>
             </div>
-            <div>
-                <h4 class="font-bold mb-4 uppercase text-xs tracking-widest text-slate-400">Socials</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="https://facebook.com" target="_blank" rel="noopener" class="hover:text-blue-500 transition">Facebook</a></li>
-                    <li><a href="https://twitter.com" target="_blank" rel="noopener" class="hover:text-blue-500 transition">Twitter (X)</a></li>
-                    <li><a href="https://instagram.com" target="_blank" rel="noopener" class="hover:text-blue-500 transition">Instagram</a></li>
-                    <li><a href="https://github.com" target="_blank" rel="noopener" class="hover:text-blue-500 transition">GitHub</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4 uppercase text-xs tracking-widest text-slate-400">Company</h4>
-                <ul class="space-y-2 text-sm">
-                    <li><a href="about-us.html" class="hover:text-blue-500 transition">About Us</a></li>
-                    <li><a href="contact-us.html" class="hover:text-blue-500 transition">Contact Us</a></li>
-                    <li><a href="accessibility.html" class="hover:text-blue-500 transition">Accessibility</a></li>
-                </ul>
+            
+            <div class="text-sm">
+                <div id="footer-copy">
+                    &copy; <span id="current-year"></span> IntelReap • VideoLoader. All Rights Reserved.
+                </div>
+                <div class="mt-4 text-xs text-slate-500">
+                    Not affiliated with YouTube, Instagram, or any social platform.
+                </div>
             </div>
         </div>
         
-        <div class="max-w-6xl mx-auto border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500">
-            <p>© <span id="current-year"></span> VideoLoader. All rights reserved.</p>
-            <p class="mt-2 md:mt-0 italic">Designed for speed, built for privacy.</p>
-        </div>
+        <!-- Related Tools will be inserted here by JS -->
     </footer>
-    <!-- VANILLA JAVASCRIPT (fully functional &amp; syntax-fixed while preserving 100% original logic) -->
+
+    <!-- ORIGINAL VANILLA JAVASCRIPT (preserved 100% - logic, caching, MP3 handling, everything intact) -->
     <script>
         // ====================== HELPER FUNCTIONS ======================
         const API_ENDPOINTS = [
@@ -672,21 +749,14 @@ result = await res.json();
         document.getElementById("current-year").textContent = new Date().getFullYear();
     </script>
 
-    <!-- GLOBAL SHARED SCRIPTS – ONE BLOCK FOR THE ENTIRE SITE -->
-    <!-- These scripts are loaded on EVERY page (including this one) and handle:
-         • menu-system.js          → auto-builds top navigation from registry
-         • internal-links.js       → auto-populates "Related Tools & Guides" section
-         • schema.js               → adds/enhances JSON-LD per page type
-         • legal-engine.js         → keeps legal footer links consistent
-         • search-system.js        → global search (ready for future)
-         • root-config.js          → site-wide config & dark-mode sync
-         • registry.js             → single source of truth (already required first) -->
-    <script src="/js/registry.js"></script>
-    <script src="/js/root-config.js"></script>
-    <script src="/js/menu-system.js"></script>
-    <script src="/js/search-system.js"></script>
-    <script src="/js/schema.js"></script>
-    <script src="/js/internal-links.js"></script>
-    <script src="/js/legal-engine.js"></script>
+    <!-- GLOBAL SHARED SCRIPTS – deferred for best performance + correct load order (site-wide) -->
+    <script defer src="/js/registry.js"></script>
+    <script defer src="/js/root-config.js"></script>
+    <script defer src="/js/menu-system.js"></script>
+    <script defer src="/js/search-system.js"></script>
+    <script defer src="/js/schema.js"></script>
+    <script defer src="/js/internal-links.js"></script>
+    <script defer src="/js/legal-engine.js"></script>
+
 </body>
 </html>
