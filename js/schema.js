@@ -8,7 +8,7 @@ function getCurrentSlug() {
     let path = window.location.pathname;
     if (path.endsWith('/')) path = path.slice(0, -1);
     if (path === '' || path === '/' || path === '/index.html') return '';
-    return path.replace(/\.html$/, '').replace(/^\//, '');
+    return path.replace(/\.html$/, '');   // now keeps full path including /guides/
 }
 
 function addOrEnhanceSchema() {
@@ -23,7 +23,7 @@ function addOrEnhanceSchema() {
         "@context": "https://schema.org",
         "@type": page.type === 'legal' ? "WebPage" : page.type === 'info' ? "AboutPage" : "WebPage",
         "name": page.title,
-        "url": `https://intelreap.com/${slug || ''}`,
+        "url": `https://intelreap.com${slug || ''}`,   // FIXED — no extra slash
         "publisher": {
             "@type": "Organization",
             "name": "VideoLoader Team"
