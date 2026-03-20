@@ -4,7 +4,7 @@
     "title": "404",
     "type": "info",
     "priority": 0.5,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": []
   },
   {
@@ -12,7 +12,7 @@
     "title": "About Us",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": []
   },
   {
@@ -20,7 +20,7 @@
     "title": "Accessibility",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": []
   },
   {
@@ -28,7 +28,7 @@
     "title": "Contact Us",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": []
   },
   {
@@ -36,7 +36,7 @@
     "title": "Cookies Policy",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": []
   },
   {
@@ -44,7 +44,7 @@
     "title": "Disclaimer",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": []
   },
   {
@@ -52,7 +52,7 @@
     "title": "How To Delete Downloads On Mac",
     "type": "guide",
     "priority": 0.7,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": []
   },
   {
@@ -60,7 +60,7 @@
     "title": "How To Find Downloads On IPhone",
     "type": "guide",
     "priority": 0.7,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": []
   },
   {
@@ -68,7 +68,7 @@
     "title": "Home",
     "type": "tool",
     "priority": 1,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": [
       "video downloader",
       "youtube",
@@ -82,7 +82,7 @@
     "title": "Privacy Policy",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": []
   },
   {
@@ -90,7 +90,7 @@
     "title": "Sitemap",
     "type": "utility",
     "priority": 0.5,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": []
   },
   {
@@ -98,7 +98,7 @@
     "title": "Terms Of Use",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-19",
+    "lastmod": "2026-03-20",
     "keywords": []
   }
 ]
