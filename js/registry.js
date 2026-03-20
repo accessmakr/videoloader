@@ -101,14 +101,6 @@ const siteRegistry = [
     "priority": 0.5,
     "lastmod": "2026-03-20",
     "keywords": []
-  },
-  {
-    "slug": "/tools/youtube-to-mp3-download-2026",
-    "title": "Youtube To Mp3 Download 2026",
-    "type": "tool",
-    "priority": 0.8,
-    "lastmod": "2026-03-20",
-    "keywords": []
   }
 ];
 if (typeof window !== "undefined") window.siteRegistry = siteRegistry;
