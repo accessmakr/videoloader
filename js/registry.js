@@ -65,14 +65,6 @@ const siteRegistry = [
     "keywords": []
   },
   {
-    "slug": "/how-to-find-downloads-on-iPhone",
-    "title": "How To Find Downloads On IPhone",
-    "type": "guide",
-    "priority": 0.7,
-    "lastmod": "2026-03-20",
-    "keywords": []
-  },
-  {
     "slug": "",
     "title": "Home",
     "type": "tool",
