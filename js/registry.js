@@ -101,6 +101,14 @@ const siteRegistry = [
     "priority": 0.5,
     "lastmod": "2026-03-21",
     "keywords": []
+  },
+  {
+    "slug": "/tools/youtube-to-mp3",
+    "title": "Youtube To Mp3",
+    "type": "tool",
+    "priority": 0.8,
+    "lastmod": "2026-03-21",
+    "keywords": []
   }
 ];
 if (typeof window !== "undefined") window.siteRegistry = siteRegistry;
