@@ -550,7 +550,7 @@
             toast.textContent = msg; toastContainer.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
-        function fillDemo(type) {
+        window.fillDemo = function(type) {
             let sample = '';
             let toastMsg = '';
 
@@ -589,7 +589,7 @@
             updateSubmitButton();
             if (toastMsg) addToast(toastMsg);
         }
-        function shareTool() {
+        window.shareTool = function() {
             const url = window.location.href;
             if (navigator.share) navigator.share({ title: "VideoLoader", url });
             else navigator.clipboard.writeText(url).then(() => addToast("Link copied – share with friends!"));
@@ -740,5 +740,6 @@
     <script defer src="/js/internal-links.js"></script>
     <script defer src="/js/legal-engine.js"></script>
 
+      <div id="toast-container" class="fixed bottom-5 right-5 flex flex-col gap-3 z-50"></div>  
 </body>
 </html>
