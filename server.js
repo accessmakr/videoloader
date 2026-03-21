@@ -13,6 +13,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
+const cache = new Map();
+
 /*
 ======================
 VIDEO INFO (MP4)
@@ -26,46 +28,56 @@ app.post("/api/info", async (req, res) => {
       return res.status(400).json({ error: "No URL provided" });
     }
 
+    // ✅ CACHE
+    if (cache.has(url)) {
+      return res.json(cache.get(url));
+    }
+
     const info = await ytdlp(url, {
       dumpSingleJson: true,
       noWarnings: true,
       skipDownload: true,
-      preferFreeFormats: true,
+
+      // 🔥 CRITICAL BYPASS SETTINGS
+      extractorArgs: [
+        "youtube:player_client=android",
+        "youtube:player_skip=webpage,configs",
+        "generic:impersonate"
+      ],
+
+      // 🔥 HEADERS (look like real browser)
+      addHeader: [
+        "user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+        "accept-language:en-US,en;q=0.9",
+        "referer:https://www.youtube.com/"
+      ],
 
       // ⚡ SPEED
       concurrentFragments: 16,
 
       // 🔁 STABILITY
-      retries: 3,
-      fragmentRetries: 3,
-
-      // 🌍 PLATFORM SUPPORT (YouTube + TikTok + IG)
-      extractorArgs: [
-        "youtube:player_client=android",
-        "generic:impersonate"
-      ],
-
-      // 🔐 HEADERS (avoid blocking)
-      addHeader: [
-        "referer:youtube.com",
-        "user-agent:Mozilla/5.0"
-      ]
+      retries: 5,
+      fragmentRetries: 5
     });
 
-    const formats = info.formats
+    const formats = (info.formats || [])
       .filter(f => f.url && f.ext === "mp4" && f.height)
       .map(f => ({
         quality: `${f.height}p`,
-        url: f.url,
+        url: f.url.replace("http://", "https://"),
         ext: f.ext
       }))
       .sort((a, b) => parseInt(b.quality) - parseInt(a.quality));
 
-    res.json({
+    const responseData = {
       title: info.title,
-      thumbnail: info.thumbnail,
+      thumbnail: info.thumbnail || (info.thumbnails?.[0]?.url || null),
       formats
-    });
+    };
+
+    cache.set(url, responseData);
+
+    res.json(responseData);
 
   } catch (err) {
     console.error("INFO ERROR:", err.stderr || err.message || err);
@@ -97,23 +109,27 @@ app.post("/api/mp3", async (req, res) => {
       audioFormat: "mp3",
       output: filePath,
 
-      // ⚡ SPEED
-      concurrentFragments: 16,
-      limitRate: "10M",
+      // 🔥 SAME BYPASS SETTINGS
+      extractorArgs: [
+        "youtube:player_client=android",
+        "youtube:player_skip=webpage,configs",
+        "generic:impersonate"
+      ],
 
-      // 🔁 STABILITY
-      retries: 5,
-      fragmentRetries: 5,
-
-      // 🔐 HEADERS
       addHeader: [
-        "user-agent:Mozilla/5.0"
-      ]
+        "user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
+        "accept-language:en-US,en;q=0.9",
+        "referer:https://www.youtube.com/"
+      ],
+
+      concurrentFragments: 16,
+      retries: 5,
+      fragmentRetries: 5
     });
 
     res.download(filePath, fileName, () => {
       if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath); // 🧼 cleanup after download
+        fs.unlinkSync(filePath);
       }
     });
 
@@ -136,4 +152,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
 });
-
