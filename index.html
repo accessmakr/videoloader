@@ -1,12 +1,6 @@
 
 
 
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -512,26 +506,32 @@
     return { 
       "User-Agent": ua, 
       "Referer": "https://www.tiktok.com/",
-      "Accept": "*/*"
+      "Accept": "*/*",
+      "Sec-Fetch-Site": "cross-site",
+      "Sec-Fetch-Mode": "cors",
+      "Sec-Fetch-Dest": "video"
     };
   }
-  if (link.includes("twimg.com") || link.includes("twitter.com") || link.includes("x.com")) {
+  if (link.includes("twimg.com") || link.includes("twitter.com") || link.includes("x.com") || 
+      link.includes("video.twimg.com") || link.includes("pbs.twimg.com")) {
     return { 
       "User-Agent": ua, 
       "Referer": "https://twitter.com/",
-      "Accept": "*/*"
+      "Accept": "*/*",
+      "Origin": "https://twitter.com",
+      "Sec-Fetch-Site": "cross-site",
+      "Sec-Fetch-Mode": "cors"
     };
   }
   if (link.includes("instagram")) {
     return { 
       "User-Agent": ua, 
       "Referer": "https://www.instagram.com/",
-      "Accept": "*/*"
+      "Accept": "*/*",
+      "Sec-Fetch-Site": "cross-site"
     };
   }
-  return { 
-    "User-Agent": ua 
-  };
+  return { "User-Agent": ua };
 }
 
 async function startDownload(link, filename) {
