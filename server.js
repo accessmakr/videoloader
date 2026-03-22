@@ -16,43 +16,42 @@ app.use(express.static(__dirname));
 const cache = new Map();
 
 /* ======================
-   SHARED MODERN OPTIONS (2026 bypass)
+   UPDATED 2026 BYPASS OPTIONS
    ====================== */
-const getBaseOptions = (isNoTTWatermark = false) => ({
-  noWarnings: true,
-  retries: 10,
-  fragmentRetries: 10,
-  noCheckCertificate: true,
-  concurrentFragments: 16,
-
-  // 🔥 MODERN YOUTUBE BYPASS (fixes bot detection + 403 + Varnish)
-  extractorArgs: [
-    "youtube:player_client=android,ios,web,web_embedded",
+const getBaseOptions = (isNoTTWatermark = false) => {
+  let extractorArgs = [
+    "youtube:player_client=default,web,android,web_embedded",   // 2026 safe combo
     "youtube:player_skip=webpage,configs,web_embedded",
-    "youtube:age_gate_bypass",                    // extra safety
-    "generic:impersonate"                         // kept but now with better clients
-  ],
+    "youtube:age_gate_bypass"
+  ];
 
-  // 🔥 Updated headers (Chrome 134+)
-  addHeader: [
-    "user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
-    "accept-language:en-US,en;q=0.9",
-    "referer:https://www.youtube.com/"
-  ],
+  if (isNoTTWatermark) {
+    extractorArgs.push("tiktok:remove_watermark");
+  }
 
-  // TikTok no-watermark support (uses the flag you already send)
-  ...(isNoTTWatermark && { extractorArgs: [...(Array.isArray(this.extractorArgs) ? this.extractorArgs : []), "tiktok:remove_watermark"] })
-});
+  return {
+    noWarnings: true,
+    retries: 10,
+    fragmentRetries: 10,
+    noCheckCertificate: true,
+    concurrentFragments: 16,
+    extractorArgs,
+    addHeader: [
+      "user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+      "accept-language:en-US,en;q=0.9",
+      "referer:https://www.youtube.com/"
+    ]
+  };
+};
 
 /*
 ======================
-VIDEO INFO (MP4) – FIXED
+VIDEO INFO (MP4) – now works for YouTube
 ======================
 */
 app.post("/api/info", async (req, res) => {
   try {
     const { url, isNoTTWatermark } = req.body;
-
     if (!url) return res.status(400).json({ error: "No URL provided" });
 
     if (cache.has(url)) return res.json(cache.get(url));
@@ -66,7 +65,7 @@ app.post("/api/info", async (req, res) => {
     });
 
     const formats = (info.formats || [])
-      .filter(f => f.url && f.ext === "mp4" && f.height)
+      .filter(f => f.url && (f.ext === "mp4" || f.ext === "webm") && f.height)
       .map(f => ({
         quality: `${f.height}p`,
         url: f.url.replace("http://", "https://"),
@@ -76,7 +75,7 @@ app.post("/api/info", async (req, res) => {
 
     const responseData = {
       title: info.title,
-      thumbnail: info.thumbnail || (info.thumbnails?.[0]?.url || null),
+      thumbnail: info.thumbnail || info.thumbnails?.[0]?.url || null,
       formats
     };
 
@@ -94,7 +93,7 @@ app.post("/api/info", async (req, res) => {
 
 /*
 ======================
-MP3 DOWNLOAD – FIXED
+MP3 DOWNLOAD
 ======================
 */
 app.post("/api/mp3", async (req, res) => {
@@ -111,7 +110,7 @@ app.post("/api/mp3", async (req, res) => {
       ...options,
       extractAudio: true,
       audioFormat: "mp3",
-      audioQuality: 0,           // best quality
+      audioQuality: 0,
       output: filePath
     });
 
@@ -121,10 +120,7 @@ app.post("/api/mp3", async (req, res) => {
 
   } catch (err) {
     console.error("MP3 ERROR:", err.stderr || err.message || err);
-    const msg = err.message?.includes("Sign in") || err.message?.includes("403")
-      ? "YouTube/TikTok blocked MP3 conversion – try again"
-      : "MP3 conversion failed";
-    res.status(500).json({ error: msg });
+    res.status(500).json({ error: "MP3 conversion failed" });
   }
 });
 
@@ -135,5 +131,5 @@ START SERVER
 */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ VideoLoader server running on port ${PORT} (yt-dlp bypass updated)`);
+  console.log(`✅ VideoLoader server running on port ${PORT} (yt-dlp 2026 bypass active)`);
 });
