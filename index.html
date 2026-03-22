@@ -1,6 +1,12 @@
 
 
 
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -499,32 +505,86 @@
             thumbImg.classList.add('hidden'); playerVideo.play().catch(() => {});
             addToast("Video playing inline – use Download buttons below");
         }
-        async function startDownload(link, filename) {
-            progressContainer.classList.remove('hidden'); progressFill.style.width = '0%';
-            addToast("Starting fast cached download...");
-            try {
-                const response = await fetch(link, { method: 'GET', cache: 'force-cache' });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const contentLength = response.headers.get('content-length');
-                const reader = response.body.getReader();
-                let received = 0, chunks = [];
-                while (true) {
-                    const {done, value} = await reader.read();
-                    if (done) break;
-                    chunks.push(value); received += value.length;
-                    if (contentLength) { const percent = Math.round((received / contentLength) * 100); progressFill.style.width = `${percent}%`; }
-                }
-                const blob = new Blob(chunks);
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a"); a.href = url; a.download = filename;
-                document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-                addToast("Download complete!");
-            } catch (err) {
-                addToast("Download failed – opening in new tab"); window.open(link, "_blank");
-            } finally {
-                setTimeout(() => { progressContainer.classList.add('hidden'); progressFill.style.width = '0%'; }, 1500);
-            }
-        }
+        function getDownloadHeaders(link) {
+  const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36";
+  
+  if (link.includes("tiktok")) {
+    return { 
+      "User-Agent": ua, 
+      "Referer": "https://www.tiktok.com/",
+      "Accept": "*/*"
+    };
+  }
+  if (link.includes("twimg.com") || link.includes("twitter.com") || link.includes("x.com")) {
+    return { 
+      "User-Agent": ua, 
+      "Referer": "https://twitter.com/",
+      "Accept": "*/*"
+    };
+  }
+  if (link.includes("instagram")) {
+    return { 
+      "User-Agent": ua, 
+      "Referer": "https://www.instagram.com/",
+      "Accept": "*/*"
+    };
+  }
+  return { 
+    "User-Agent": ua 
+  };
+}
+
+async function startDownload(link, filename) {
+  progressContainer.classList.remove('hidden'); 
+  progressFill.style.width = '0%';
+  addToast("Starting fast cached download...");
+
+  try {
+    const headers = getDownloadHeaders(link);
+    const response = await fetch(link, { 
+      method: 'GET', 
+      headers,
+      cache: 'force-cache' 
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const contentLength = response.headers.get('content-length');
+    const reader = response.body.getReader();
+    let received = 0, chunks = [];
+
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      chunks.push(value); 
+      received += value.length;
+      if (contentLength) {
+        const percent = Math.round((received / contentLength) * 100);
+        progressFill.style.width = `${percent}%`;
+      }
+    }
+
+    const blob = new Blob(chunks);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); 
+    a.href = url; 
+    a.download = filename;
+    document.body.appendChild(a); 
+    a.click(); 
+    document.body.removeChild(a); 
+    URL.revokeObjectURL(url);
+    addToast("Download complete!");
+  } catch (err) {
+    console.error("Download error:", err);
+    addToast("Download failed – opening in new tab");
+    window.open(link, "_blank");
+  } finally {
+    setTimeout(() => { 
+      progressContainer.classList.add('hidden'); 
+      progressFill.style.width = '0%'; 
+    }, 1500);
+  }
+}
         function renderVideoResult() {
             videoResult.classList.remove('hidden');
             thumbImg.src = videoData.thumbnail; thumbImg.classList.remove('hidden');
