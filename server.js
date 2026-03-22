@@ -15,49 +15,54 @@ app.use(express.static(__dirname));
 
 const cache = new Map();
 
+/* ======================
+   SHARED MODERN OPTIONS (2026 bypass)
+   ====================== */
+const getBaseOptions = (isNoTTWatermark = false) => ({
+  noWarnings: true,
+  retries: 10,
+  fragmentRetries: 10,
+  noCheckCertificate: true,
+  concurrentFragments: 16,
+
+  // 🔥 MODERN YOUTUBE BYPASS (fixes bot detection + 403 + Varnish)
+  extractorArgs: [
+    "youtube:player_client=android,ios,web,web_embedded",
+    "youtube:player_skip=webpage,configs,web_embedded",
+    "youtube:age_gate_bypass",                    // extra safety
+    "generic:impersonate"                         // kept but now with better clients
+  ],
+
+  // 🔥 Updated headers (Chrome 134+)
+  addHeader: [
+    "user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+    "accept-language:en-US,en;q=0.9",
+    "referer:https://www.youtube.com/"
+  ],
+
+  // TikTok no-watermark support (uses the flag you already send)
+  ...(isNoTTWatermark && { extractorArgs: [...(Array.isArray(this.extractorArgs) ? this.extractorArgs : []), "tiktok:remove_watermark"] })
+});
+
 /*
 ======================
-VIDEO INFO (MP4)
+VIDEO INFO (MP4) – FIXED
 ======================
 */
 app.post("/api/info", async (req, res) => {
   try {
-    const { url } = req.body;
+    const { url, isNoTTWatermark } = req.body;
 
-    if (!url) {
-      return res.status(400).json({ error: "No URL provided" });
-    }
+    if (!url) return res.status(400).json({ error: "No URL provided" });
 
-    // ✅ CACHE
-    if (cache.has(url)) {
-      return res.json(cache.get(url));
-    }
+    if (cache.has(url)) return res.json(cache.get(url));
+
+    const options = getBaseOptions(isNoTTWatermark);
 
     const info = await ytdlp(url, {
+      ...options,
       dumpSingleJson: true,
-      noWarnings: true,
-      skipDownload: true,
-
-      // 🔥 CRITICAL BYPASS SETTINGS
-      extractorArgs: [
-        "youtube:player_client=android",
-        "youtube:player_skip=webpage,configs",
-        "generic:impersonate"
-      ],
-
-      // 🔥 HEADERS (look like real browser)
-      addHeader: [
-        "user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
-        "accept-language:en-US,en;q=0.9",
-        "referer:https://www.youtube.com/"
-      ],
-
-      // ⚡ SPEED
-      concurrentFragments: 16,
-
-      // 🔁 STABILITY
-      retries: 5,
-      fragmentRetries: 5
+      skipDownload: true
     });
 
     const formats = (info.formats || [])
@@ -76,69 +81,50 @@ app.post("/api/info", async (req, res) => {
     };
 
     cache.set(url, responseData);
-
     res.json(responseData);
 
   } catch (err) {
     console.error("INFO ERROR:", err.stderr || err.message || err);
-
-    res.status(500).json({
-      error: err.stderr || err.message || "Failed to fetch video info"
-    });
+    const msg = err.message?.includes("Sign in") || err.message?.includes("403")
+      ? "YouTube blocked request – try again in 30s (or use a different video)"
+      : (err.stderr || err.message || "Failed to fetch video info");
+    res.status(500).json({ error: msg });
   }
 });
 
 /*
 ======================
-MP3 DOWNLOAD
+MP3 DOWNLOAD – FIXED
 ======================
 */
 app.post("/api/mp3", async (req, res) => {
   try {
     const { url } = req.body;
-
-    if (!url) {
-      return res.status(400).json({ error: "No URL provided" });
-    }
+    if (!url) return res.status(400).json({ error: "No URL provided" });
 
     const fileName = `audio-${Date.now()}.mp3`;
     const filePath = path.join(__dirname, fileName);
 
+    const options = getBaseOptions(false);
+
     await ytdlp(url, {
+      ...options,
       extractAudio: true,
       audioFormat: "mp3",
-      output: filePath,
-
-      // 🔥 SAME BYPASS SETTINGS
-      extractorArgs: [
-        "youtube:player_client=android",
-        "youtube:player_skip=webpage,configs",
-        "generic:impersonate"
-      ],
-
-      addHeader: [
-        "user-agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36",
-        "accept-language:en-US,en;q=0.9",
-        "referer:https://www.youtube.com/"
-      ],
-
-      concurrentFragments: 16,
-      retries: 5,
-      fragmentRetries: 5
+      audioQuality: 0,           // best quality
+      output: filePath
     });
 
-    res.download(filePath, fileName, () => {
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
+    res.download(filePath, fileName, (err) => {
+      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     });
 
   } catch (err) {
     console.error("MP3 ERROR:", err.stderr || err.message || err);
-
-    res.status(500).json({
-      error: "MP3 conversion failed"
-    });
+    const msg = err.message?.includes("Sign in") || err.message?.includes("403")
+      ? "YouTube/TikTok blocked MP3 conversion – try again"
+      : "MP3 conversion failed";
+    res.status(500).json({ error: msg });
   }
 });
 
@@ -148,7 +134,6 @@ START SERVER
 ======================
 */
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+  console.log(`✅ VideoLoader server running on port ${PORT} (yt-dlp bypass updated)`);
 });
