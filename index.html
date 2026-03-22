@@ -509,10 +509,7 @@
       "Accept": "*/*",
       "Sec-Fetch-Site": "cross-site",
       "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Dest": "video",
-      "Sec-Ch-Ua": '"Chromium";v="134", "Not;A=Brand";v="24", "Google Chrome";v="134"',
-      "Sec-Ch-Ua-Mobile": "?0",
-      "Sec-Ch-Ua-Platform": '"Windows"'
+      "Sec-Fetch-Dest": "video"
     };
   }
   if (link.includes("twimg.com") || link.includes("twitter.com") || link.includes("x.com") || 
@@ -520,13 +517,10 @@
     return { 
       "User-Agent": ua, 
       "Referer": "https://twitter.com/",
-      "Origin": "https://twitter.com",
       "Accept": "*/*",
+      "Origin": "https://twitter.com",
       "Sec-Fetch-Site": "cross-site",
-      "Sec-Fetch-Mode": "cors",
-      "Sec-Ch-Ua": '"Chromium";v="134", "Not;A=Brand";v="24", "Google Chrome";v="134"',
-      "Sec-Ch-Ua-Mobile": "?0",
-      "Sec-Ch-Ua-Platform": '"Windows"'
+      "Sec-Fetch-Mode": "cors"
     };
   }
   if (link.includes("instagram")) {
@@ -534,41 +528,13 @@
       "User-Agent": ua, 
       "Referer": "https://www.instagram.com/",
       "Accept": "*/*",
-      "Sec-Fetch-Site": "cross-site",
-      "Sec-Ch-Ua": '"Chromium";v="134", "Not;A=Brand";v="24", "Google Chrome";v="134"',
-      "Sec-Ch-Ua-Mobile": "?0",
-      "Sec-Ch-Ua-Platform": '"Windows"'
+      "Sec-Fetch-Site": "cross-site"
     };
   }
   return { "User-Agent": ua };
 }
 
 async function startDownload(link, filename) {
-  const isProxyNeeded = link.includes("tiktok") || link.includes("video.twimg.com") || 
-                        link.includes("twimg.com") || link.includes("x.com");
-
-  if (isProxyNeeded) {
-    progressContainer.classList.remove('hidden');
-    progressFill.style.width = '30%';
-    addToast("Starting secure server proxy download (TikTok/X 403 fix)...");
-
-    const proxyUrl = `/api/download?url=${encodeURIComponent(link)}&filename=${encodeURIComponent(filename)}`;
-    const a = document.createElement("a");
-    a.href = proxyUrl;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    setTimeout(() => { 
-      progressContainer.classList.add('hidden'); 
-      progressFill.style.width = '0%'; 
-    }, 1500);
-    addToast("Download started via proxy!");
-    return;
-  }
-
-  // === ORIGINAL CLIENT-SIDE DOWNLOAD (YouTube, Instagram, Facebook, etc.) ===
   progressContainer.classList.remove('hidden'); 
   progressFill.style.width = '0%';
   addToast("Starting fast cached download...");
@@ -597,28 +563,6 @@ async function startDownload(link, filename) {
         progressFill.style.width = `${percent}%`;
       }
     }
-
-    const blob = new Blob(chunks);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); 
-    a.href = url; 
-    a.download = filename;
-    document.body.appendChild(a); 
-    a.click(); 
-    document.body.removeChild(a); 
-    URL.revokeObjectURL(url);
-    addToast("Download complete!");
-  } catch (err) {
-    console.error("Download error:", err);
-    addToast("Download failed – opening in new tab");
-    window.open(link, "_blank");
-  } finally {
-    setTimeout(() => { 
-      progressContainer.classList.add('hidden'); 
-      progressFill.style.width = '0%'; 
-    }, 1500);
-  }
-}
 
     const blob = new Blob(chunks);
     const url = URL.createObjectURL(blob);
