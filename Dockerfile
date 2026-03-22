@@ -6,8 +6,8 @@ FROM node:18
 # Install system dependencies
 RUN apt-get update && apt-get install -y python3 python3-pip ffmpeg
 
-# Install yt-dlp (FIXED)
-RUN pip3 install yt-dlp --break-system-packages
+# Install LATEST yt-dlp (git master = nightly fixes for YouTube 2026)
+RUN pip3 install --upgrade git+https://github.com/yt-dlp/yt-dlp.git --break-system-packages
 
 # Set working directory
 WORKDIR /app
