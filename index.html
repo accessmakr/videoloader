@@ -457,12 +457,14 @@
         const extractUrl = (str) => { const match = str.match(/(https?:\/\/[^\s"']+)/i); return match ? match[0].trim() : ''; };
         const isValidURL = (str) => { try { return ["http:", "https:"].includes(new URL(str).protocol); } catch { return false; } };
         const getThumbnail = (inputUrl, result) => {
-            const placeholder = "https://via.placeholder.com/800x450/1e293b/ffffff?text=Video+Ready";
-            if (result?.picker?.[0]?.thumb) return result.picker[0].thumb;
-            const yt = inputUrl.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/);
-            if (yt && yt[1]) return `https://i.ytimg.com/vi/${yt[1]}/maxresdefault.jpg`;
-            return placeholder;
-        };
+    const placeholder = "https://via.placeholder.com/800x450/1e293b/ffffff?text=Video+Ready";
+    if (result?.picker?.[0]?.thumb) return result.picker[0].thumb;
+    
+    const yt = inputUrl.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/);
+    if (yt && yt[1]) return `https://i.ytimg.com/vi/${yt[1]}/maxresdefault.jpg`;
+    
+    return result?.thumbnail || placeholder;
+};
 
         let currentUrl = '', quality = 'max', loading = false, videoData = null, errorMsg = null;
         let darkMode = localStorage.getItem("darkMode") === "true";
@@ -502,36 +504,41 @@
         function getDownloadHeaders(link) {
   const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36";
   
+  const baseHeaders = {
+    "User-Agent": ua,
+    "Accept": "*/*",
+    "Accept-Language": "en-US,en;q=0.9",
+    "sec-ch-ua": '"Not)A;Brand";v="99", "Chromium";v="134", "Google Chrome";v="134"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"',
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-dest": "video"
+  };
+
   if (link.includes("tiktok")) {
     return { 
-      "User-Agent": ua, 
+      ...baseHeaders,
       "Referer": "https://www.tiktok.com/",
-      "Accept": "*/*",
-      "Sec-Fetch-Site": "cross-site",
-      "Sec-Fetch-Mode": "cors",
-      "Sec-Fetch-Dest": "video"
+      "Origin": "https://www.tiktok.com"
     };
   }
   if (link.includes("twimg.com") || link.includes("twitter.com") || link.includes("x.com") || 
       link.includes("video.twimg.com") || link.includes("pbs.twimg.com")) {
     return { 
-      "User-Agent": ua, 
+      ...baseHeaders,
       "Referer": "https://twitter.com/",
-      "Accept": "*/*",
-      "Origin": "https://twitter.com",
-      "Sec-Fetch-Site": "cross-site",
-      "Sec-Fetch-Mode": "cors"
+      "Origin": "https://twitter.com"
     };
   }
   if (link.includes("instagram")) {
     return { 
-      "User-Agent": ua, 
+      ...baseHeaders,
       "Referer": "https://www.instagram.com/",
-      "Accept": "*/*",
-      "Sec-Fetch-Site": "cross-site"
+      "Origin": "https://www.instagram.com"
     };
   }
-  return { "User-Agent": ua };
+  return baseHeaders;
 }
 
 async function startDownload(link, filename) {
@@ -803,4 +810,3 @@ async function startDownload(link, filename) {
       <div id="toast-container" class="fixed bottom-5 right-5 flex flex-col gap-3 z-50"></div>  
 </body>
 </html>
-
