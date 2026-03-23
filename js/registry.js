@@ -5,7 +5,7 @@ const siteRegistry = [
     "title": "404",
     "type": "info",
     "priority": 0.5,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   },
   {
@@ -13,7 +13,7 @@ const siteRegistry = [
     "title": "About Us",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   },
   {
@@ -21,7 +21,7 @@ const siteRegistry = [
     "title": "Accessibility",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   },
   {
@@ -29,7 +29,7 @@ const siteRegistry = [
     "title": "Contact Us",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   },
   {
@@ -37,7 +37,7 @@ const siteRegistry = [
     "title": "Cookies Policy",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   },
   {
@@ -45,7 +45,7 @@ const siteRegistry = [
     "title": "Disclaimer",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   },
   {
@@ -53,7 +53,7 @@ const siteRegistry = [
     "title": "How To Delete Downloads On Mac",
     "type": "guide",
     "priority": 0.7,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   },
   {
@@ -61,7 +61,7 @@ const siteRegistry = [
     "title": "How To Find Downloads On IPhone",
     "type": "guide",
     "priority": 0.7,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   },
   {
@@ -69,7 +69,7 @@ const siteRegistry = [
     "title": "Home",
     "type": "tool",
     "priority": 1,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": [
       "video downloader",
       "youtube",
@@ -83,7 +83,7 @@ const siteRegistry = [
     "title": "Privacy Policy",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   },
   {
@@ -91,7 +91,7 @@ const siteRegistry = [
     "title": "Sitemap",
     "type": "utility",
     "priority": 0.5,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   },
   {
@@ -99,7 +99,7 @@ const siteRegistry = [
     "title": "Terms Of Use",
     "type": "legal",
     "priority": 0.5,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   },
   {
@@ -107,7 +107,7 @@ const siteRegistry = [
     "title": "Youtube To Mp3",
     "type": "tool",
     "priority": 0.8,
-    "lastmod": "2026-03-22",
+    "lastmod": "2026-03-23",
     "keywords": []
   }
 ];
