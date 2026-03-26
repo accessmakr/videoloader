@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -474,7 +477,7 @@
 
     <!-- FULL UPGRADED JAVASCRIPT (entire upper script – all new features + original logic kept) -->
     <script>
-        const API_ENDPOINTS = ["https://videoloader-production-946c.up.railway.app"];
+        const API_ENDPOINTS = ["https://cobalt-render-private.onrender.com"];
         const slugify = (str = '') => str.toString().toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 100);
         let isAudioOnly = false;
         const slugifyFilename = (filename) => {
@@ -706,82 +709,65 @@ async function startDownload(link, filename) {
             loading = false; updateLoadingUI();
         }
         async function handleSubmit(e) {
-            e.preventDefault();
-            const processedUrl = extractUrl(currentUrl) || currentUrl.trim();
-            if (!processedUrl || !isValidURL(processedUrl)) { showError("Paste a valid video URL"); return; }
+    e.preventDefault();
+    const processedUrl = extractUrl(currentUrl) || currentUrl.trim();
+    if (!processedUrl || !isValidURL(processedUrl)) { showError("Paste a valid video URL"); return; }
 
-            if (abortController) abortController.abort();
-            abortController = new AbortController();
+    if (abortController) abortController.abort();
+    abortController = new AbortController();
 
-            loading = true; videoData = null; hideError(); hideVideoResult(); updateLoadingUI();
+    loading = true; videoData = null; hideError(); hideVideoResult(); updateLoadingUI();
 
-            let result = null;
-            if (processedUrl === lastUrl && lastData) {
-                result = lastData;
-            } else {
-                try {
-                    let endpoint = "/api/info";
-                    if (isAudioOnly) endpoint = "/api/mp3";
+    const COBALT_URL = "https://cobalt-render-private.onrender.com";
 
-                    const bodyData = { url: processedUrl, ...(noWatermarkCheckbox.checked ? { isNoTTWatermark: true } : {}) };
+    try {
+        const bodyData = {
+            url: processedUrl,
+            videoQuality: isAudioOnly ? undefined : (quality === "max" ? "max" : quality),
+            downloadMode: isAudioOnly ? "audio" : "auto",
+            audioFormat: "mp3"
+            // isNoTTWatermark is ignored by Cobalt (it handles TikTok internally)
+        };
 
-                    const res = await fetch(`${API_ENDPOINTS[0]}${endpoint}`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(bodyData),
-                        signal: abortController.signal
-                    });
+        const res = await fetch(COBALT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(bodyData),
+            signal: abortController.signal
+        });
 
-                    if (!res.ok) {
-                        let errorText = `Server error ${res.status}`;
-                        try { const errJson = await res.json(); if (errJson.error) errorText = errJson.error; } catch {}
-                        throw new Error(errorText);
-                    }
+        if (!res.ok) throw new Error("Cobalt error");
 
-                    if (isAudioOnly) {
-                        const blob = await res.blob();
-                        const url = window.URL.createObjectURL(blob);
-                        await startDownload(url, slugifyFilename("audio.mp3"));
-                        loading = false; updateLoadingUI(); return;
-                    }
+        const result = await res.json();
 
-                    result = await res.json();
-                    if (result.error) throw new Error(result.error);
+        if (result.status === "error") throw new Error(result.error?.code || "Failed");
 
-                    lastUrl = processedUrl; lastData = result;
-                } catch (err) {
-                    if (err.name === "AbortError") showError("Request canceled");
-                    else {
-                        let msg = "Failed to process video: " + err.message;
-                        if (err.message.includes("Unsupported URL")) msg = "TikTok URL error: Use a direct video link.";
-                        if (err.message.includes("403")) msg = "Server blocked request (403). Try again.";
-                        showError(msg);
-                    }
-                    loading = false; updateLoadingUI(); return;
-                }
-            }
-
-            let title = result.title || "Processed Video";
-            let formats = [];
-            if (Array.isArray(result.formats) && result.formats.length > 0) {
-                formats = result.formats.map(f => ({
-                    label: f.quality || "Download",
-                    link: f.url,
-                    filename: slugifyFilename(title + '.' + (f.ext || 'mp4'))
-                })).filter(f => f.link);
-            }
-
-            if (!formats.length) { showError("No download link available"); loading = false; updateLoadingUI(); return; }
-
-            videoData = {
-                title: title,
-                thumbnail: result.thumbnail || getThumbnail(processedUrl, result),
-                formats: formats
-            };
-
-            renderVideoResult();
-            loading = false; updateLoadingUI();
+        // Cobalt usually gives one direct URL
+        let downloadLink = result.url;
+        if (!downloadLink && result.picker && result.picker.length > 0) {
+            downloadLink = result.picker[0].url; // take first if picker
         }
+
+        const title = result.filename ? result.filename.replace(/\.[^/.]+$/, "") : "Video from Cobalt";
+
+        videoData = {
+            title: title,
+            thumbnail: getThumbnail(processedUrl, {}),
+            formats: [{
+                label: isAudioOnly ? "MP3 Audio (High Quality)" : (quality + " Video"),
+                link: downloadLink,
+                filename: slugifyFilename(title + (isAudioOnly ? '.mp3' : '.mp4'))
+            }]
+        };
+
+        renderVideoResult();
+    } catch (err) {
+        if (err.name === "AbortError") showError("Request canceled");
+        else showError("Failed to process: " + (err.message || "Try another link"));
+    } finally {
+        loading = false; updateLoadingUI();
+    }
+}
         function toggleDarkMode() { 
             darkMode = !darkMode;
             localStorage.setItem("darkMode", darkMode);
