@@ -477,7 +477,7 @@
 
     <!-- FULL UPGRADED JAVASCRIPT (entire upper script – all new features + original logic kept) -->
     <script>
-        const COBALT_API = "https://cobalt-production-ce33.up.railway.app/api/json";
+        const COBALT_API = "https://cobalt-production-ce33.up.railway.app";
         const slugify = (str = '') => str.toString().toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 100);
         let isAudioOnly = false;
         const slugifyFilename = (filename) => {
@@ -729,25 +729,34 @@ async function startDownload(link, filename) {
                 audioFormat: isAudioOnly ? "mp3" : "best",
                 videoQuality: quality || "max",
                 audioBitrate: "320"
-                // TikTok no-watermark is now handled automatically by Cobalt in most cases
+                // no-watermark is handled automatically by Cobalt for TikTok in most cases
             };
 
             const res = await fetch(COBALT_API, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"   // ← REQUIRED by Cobalt
+                },
                 body: JSON.stringify(bodyData),
                 signal: abortController.signal
             });
 
             if (!res.ok) {
                 let errorText = `Server error ${res.status}`;
-                try { const errJson = await res.json(); if (errJson.error) errorText = errJson.error; } catch {}
+                try {
+                    const errJson = await res.json();
+                    if (errJson.error) errorText = errJson.error?.code || errJson.error;
+                } catch {}
                 throw new Error(errorText);
             }
 
             result = await res.json();
 
-            if (result.status === "error") throw new Error(result.error?.code || result.error || "Cobalt error");
+            if (result.status === "error") {
+                const errMsg = result.error?.code || result.error || "Cobalt error";
+                throw new Error(errMsg);   // ← now shows the real error code
+            }
 
             lastUrl = processedUrl;
             lastData = result;
@@ -755,21 +764,21 @@ async function startDownload(link, filename) {
             if (err.name === "AbortError") showError("Request canceled");
             else {
                 let msg = "Failed to process video: " + (err.message || "Unknown error");
-                if (msg.includes("Unsupported")) msg = "Unsupported URL – try a public video";
+                if (msg.includes("Unsupported") || msg.includes("not found")) msg = "Unsupported URL – try a different public video";
                 showError(msg);
             }
             loading = false; updateLoadingUI(); return;
         }
     }
 
-    // Map Cobalt response to your existing UI format
-    const title = result.title || "Processed Video";
+    // Map Cobalt response (works for tunnel/redirect/picker)
+    const title = result.title || result.filename || "Processed Video";
     const thumbnail = result.thumbnail || getThumbnail(processedUrl, result);
 
     let formats = [];
 
     if (result.url) {
-        // Direct link (most common for YouTube, Instagram, Twitter, etc.)
+        // Single file (YouTube, Instagram, Facebook, Twitter, etc.)
         formats = [{
             label: isAudioOnly ? "High-Quality MP3" : "Max Quality",
             link: result.url,
