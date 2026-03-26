@@ -474,7 +474,7 @@
 
     <!-- FULL UPGRADED JAVASCRIPT (entire upper script – all new features + original logic kept) -->
     <script>
-        const API_ENDPOINTS = ["videoloader-production.up.railway.app"];   
+        const API_BASE = "https://videoloader-production.up.railway.app";  
         const slugify = (str = '') => str.toString().toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 100);
         let isAudioOnly = false;
         const slugifyFilename = (filename) => {
@@ -725,7 +725,7 @@ async function startDownload(link, filename) {
 
                     const bodyData = { url: processedUrl, ...(noWatermarkCheckbox.checked ? { isNoTTWatermark: true } : {}) };
 
-                    const res = await fetch(`${API_ENDPOINTS[0]}${endpoint}`, {
+                    const res = await fetch(`${API_BASE}${endpoint}`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(bodyData),
