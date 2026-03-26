@@ -1,6 +1,3 @@
-
-
-
 const express = require("express");
 const cors = require("cors");
 const ytdlp = require("youtube-dl-exec");
@@ -20,7 +17,7 @@ const cache = new Map();
    ====================== */
 const getBaseOptions = (isNoTTWatermark = false) => {
   let extractorArgs = [
-    "youtube:player_client=web,android,ios",   // 2026 stable combo
+    "youtube:player_client=default,web,android,web_embedded",   // 2026 safe combo
     "youtube:player_skip=webpage,configs,web_embedded",
     "youtube:age_gate_bypass"
   ];
