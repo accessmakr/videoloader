@@ -1,13 +1,10 @@
-
-
-
 [phases.setup]
 nixPkgs = ["nodejs", "python3", "ffmpeg"]
 
 [phases.install]
 cmds = [
   "npm install",
-  "pip3 install --break-system-packages --upgrade git+https://github.com/yt-dlp/yt-dlp.git"
+  "pip3 install yt-dlp"
 ]
 
 [start]
