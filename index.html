@@ -477,7 +477,7 @@
 
     <!-- FULL UPGRADED JAVASCRIPT (entire upper script – all new features + original logic kept) -->
     <script>
-        const API_ENDPOINTS = ["https://cobalt-render-private.onrender.com"];
+        const COBALT_API = "https://cobalt-production-ce33.up.railway.app/api/json";
         const slugify = (str = '') => str.toString().toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 100);
         let isAudioOnly = false;
         const slugifyFilename = (filename) => {
@@ -718,55 +718,80 @@ async function startDownload(link, filename) {
 
     loading = true; videoData = null; hideError(); hideVideoResult(); updateLoadingUI();
 
-    const COBALT_URL = "https://cobalt-render-private.onrender.com";
+    let result = null;
+    if (processedUrl === lastUrl && lastData) {
+        result = lastData;
+    } else {
+        try {
+            const bodyData = {
+                url: processedUrl,
+                downloadMode: isAudioOnly ? "audio" : "auto",
+                audioFormat: isAudioOnly ? "mp3" : "best",
+                videoQuality: quality || "max",
+                audioBitrate: "320"
+                // TikTok no-watermark is now handled automatically by Cobalt in most cases
+            };
 
-    try {
-        const bodyData = {
-            url: processedUrl,
-            videoQuality: isAudioOnly ? undefined : (quality === "max" ? "max" : quality),
-            downloadMode: isAudioOnly ? "audio" : "auto",
-            audioFormat: "mp3"
-            // isNoTTWatermark is ignored by Cobalt (it handles TikTok internally)
-        };
+            const res = await fetch(COBALT_API, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(bodyData),
+                signal: abortController.signal
+            });
 
-        const res = await fetch(COBALT_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(bodyData),
-            signal: abortController.signal
-        });
+            if (!res.ok) {
+                let errorText = `Server error ${res.status}`;
+                try { const errJson = await res.json(); if (errJson.error) errorText = errJson.error; } catch {}
+                throw new Error(errorText);
+            }
 
-        if (!res.ok) throw new Error("Cobalt error");
+            result = await res.json();
 
-        const result = await res.json();
+            if (result.status === "error") throw new Error(result.error?.code || result.error || "Cobalt error");
 
-        if (result.status === "error") throw new Error(result.error?.code || "Failed");
-
-        // Cobalt usually gives one direct URL
-        let downloadLink = result.url;
-        if (!downloadLink && result.picker && result.picker.length > 0) {
-            downloadLink = result.picker[0].url; // take first if picker
+            lastUrl = processedUrl;
+            lastData = result;
+        } catch (err) {
+            if (err.name === "AbortError") showError("Request canceled");
+            else {
+                let msg = "Failed to process video: " + (err.message || "Unknown error");
+                if (msg.includes("Unsupported")) msg = "Unsupported URL – try a public video";
+                showError(msg);
+            }
+            loading = false; updateLoadingUI(); return;
         }
-
-        const title = result.filename ? result.filename.replace(/\.[^/.]+$/, "") : "Video from Cobalt";
-
-        videoData = {
-            title: title,
-            thumbnail: getThumbnail(processedUrl, {}),
-            formats: [{
-                label: isAudioOnly ? "MP3 Audio (High Quality)" : (quality + " Video"),
-                link: downloadLink,
-                filename: slugifyFilename(title + (isAudioOnly ? '.mp3' : '.mp4'))
-            }]
-        };
-
-        renderVideoResult();
-    } catch (err) {
-        if (err.name === "AbortError") showError("Request canceled");
-        else showError("Failed to process: " + (err.message || "Try another link"));
-    } finally {
-        loading = false; updateLoadingUI();
     }
+
+    // Map Cobalt response to your existing UI format
+    const title = result.title || "Processed Video";
+    const thumbnail = result.thumbnail || getThumbnail(processedUrl, result);
+
+    let formats = [];
+
+    if (result.url) {
+        // Direct link (most common for YouTube, Instagram, Twitter, etc.)
+        formats = [{
+            label: isAudioOnly ? "High-Quality MP3" : "Max Quality",
+            link: result.url,
+            filename: slugifyFilename(title + (isAudioOnly ? '.mp3' : '.mp4'))
+        }];
+    } else if (Array.isArray(result.picker) && result.picker.length > 0) {
+        // Multiple files (TikTok slideshow, Instagram carousel, etc.)
+        formats = result.picker.map(item => ({
+            label: item.type ? item.type.toUpperCase() : "Media",
+            link: item.url,
+            filename: slugifyFilename(title + (item.type === "video" ? '.mp4' : '.jpg'))
+        })).filter(f => f.link);
+    }
+
+    if (!formats.length) {
+        showError("No download link available");
+        loading = false; updateLoadingUI(); return;
+    }
+
+    videoData = { title, thumbnail, formats };
+    renderVideoResult();
+    loading = false; updateLoadingUI();
 }
         function toggleDarkMode() { 
             darkMode = !darkMode;
