@@ -1,6 +1,3 @@
-
-
-
 FROM node:18
 
 # Install system dependencies
