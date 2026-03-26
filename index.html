@@ -474,7 +474,7 @@
 
     <!-- FULL UPGRADED JAVASCRIPT (entire upper script – all new features + original logic kept) -->
     <script>
-        const API_ENDPOINTS = ["https://videoloader-production-946c.up.railway.app"];
+        const API_ENDPOINTS = ["videoloader-production.up.railway.app"];   
         const slugify = (str = '') => str.toString().toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 100);
         let isAudioOnly = false;
         const slugifyFilename = (filename) => {
