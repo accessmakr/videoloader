@@ -578,14 +578,14 @@
 async function startDownload(link, filename) {
   progressContainer.classList.remove('hidden'); 
   progressFill.style.width = '0%';
-  addToast("Starting fast cached download...");
+  addToast("Starting fast cached download via proxy...");
 
   try {
-    const headers = getDownloadHeaders(link);
-    const response = await fetch(link, { 
-      method: 'GET', 
-      headers,
-      cache: 'force-cache' 
+    // Use server proxy instead of direct CDN link
+    const proxyUrl = `${API_BASE}/api/download?url=${encodeURIComponent(link)}&filename=${encodeURIComponent(filename)}`;
+    
+    const response = await fetch(proxyUrl, { 
+      method: 'GET'
     });
 
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -600,7 +600,7 @@ async function startDownload(link, filename) {
       chunks.push(value); 
       received += value.length;
       if (contentLength) {
-        const percent = Math.round((received / contentLength) * 100);
+        const percent = Math.round((received / parseInt(contentLength)) * 100);
         progressFill.style.width = `${percent}%`;
       }
     }
@@ -614,10 +614,11 @@ async function startDownload(link, filename) {
     a.click(); 
     document.body.removeChild(a); 
     URL.revokeObjectURL(url);
+
     addToast("Download complete!");
   } catch (err) {
     console.error("Download error:", err);
-    addToast("Download failed – opening in new tab");
+    addToast("Proxy download failed – opening original link");
     window.open(link, "_blank");
   } finally {
     setTimeout(() => { 
