@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -477,13 +474,9 @@
 
     <!-- FULL UPGRADED JAVASCRIPT (entire upper script – all new features + original logic kept) -->
     <script>
-        const COBALT_API = "https://cobalt-production-ce33.up.railway.app";   // ← YOUR PRIVATE URL ONLY
-
+        const API_ENDPOINTS = ["https://videoloader-production-946c.up.railway.app"];
         const slugify = (str = '') => str.toString().toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 100);
-        
         let isAudioOnly = false;
-        let isNoWatermark = false;
-
         const slugifyFilename = (filename) => {
             if (!filename) return '';
             const lastDot = filename.lastIndexOf('.');
@@ -492,27 +485,28 @@
             if (lastDot !== -1) { base = filename.substring(0, lastDot); ext = filename.substring(lastDot + 1) || ext; }
             return `${slugify(base)}.${ext}`;
         };
-
         const extractUrl = (str) => { const match = str.match(/(https?:\/\/[^\s"']+)/i); return match ? match[0].trim() : ''; };
         const isValidURL = (str) => { try { return ["http:", "https:"].includes(new URL(str).protocol); } catch { return false; } };
-
         const getThumbnail = (inputUrl, result) => {
-            const placeholder = "https://via.placeholder.com/800x450/1e293b/ffffff?text=Video+Ready";
-            if (result?.picker?.[0]?.thumb) return result.picker[0].thumb;
-            if (result?.thumbnail) return result.thumbnail;
-            const yt = inputUrl.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/);
-            if (yt && yt[1]) return `https://i.ytimg.com/vi/${yt[1]}/maxresdefault.jpg`;
-            return placeholder;
-        };
+    const placeholder = "https://via.placeholder.com/800x450/1e293b/ffffff?text=Video+Ready";
+    if (result?.picker?.[0]?.thumb) return result.picker[0].thumb;
+    
+    const yt = inputUrl.match(/(?:youtu.be\/|youtube.com\/(?:watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/);
+    if (yt && yt[1]) return `https://i.ytimg.com/vi/${yt[1]}/maxresdefault.jpg`;
+    
+    return result?.thumbnail || placeholder;
+};
 
-        let currentUrl = '', quality = 'max', loading = false, videoData = null;
+        let currentUrl = '', quality = 'max', loading = false, videoData = null, errorMsg = null;
         let darkMode = localStorage.getItem("darkMode") === "true";
-        let abortController = null;
+        let abortController = null, lastUrl = '', lastData = null;
 
         let urlInput, qualitySelect, audioCheckbox, noWatermarkCheckbox, submitBtn, cancelBtn,
             errorDiv, loadingDiv, videoResult, thumbImg, videoTitle, formatsContainer,
-            toastContainer, darkToggle, playerVideo, progressContainer, progressFill,
-            demoModal, modalLinkDisplay, modalCopyBtn, modalPasteBtn;
+            toastContainer, darkToggle, playerVideo, progressContainer, progressFill;
+
+        // NEW MODAL ELEMENTS (added only for the live-link popup – original code untouched)
+        let demoModal, modalLinkDisplay, modalCopyBtn, modalPasteBtn, modalCloseBtn;
 
         function updateInputBorder() { 
             const processed = extractUrl(currentUrl) || currentUrl.trim();
@@ -535,61 +529,103 @@
                 submitBtn.classList.remove('hidden'); cancelBtn.classList.add('hidden'); loadingDiv.classList.add('hidden');
             }
         }
-        function hideVideoResult() { videoResult.classList.add('hidden'); }
-
         function playPreview(link) {
             const playerContainer = document.getElementById('video-player-container');
             playerVideo.src = link; playerContainer.classList.remove('hidden');
             thumbImg.classList.add('hidden'); playerVideo.play().catch(() => {});
-            addToast("Video playing inline");
+            addToast("Video playing inline – use Download buttons below");
         }
-
         function getDownloadHeaders(link) {
-            const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36";
-            const base = {
-                "User-Agent": ua, "Accept": "*/*", "Accept-Language": "en-US,en;q=0.9",
-                "sec-ch-ua": '"Not)A;Brand";v="99", "Chromium";v="134", "Google Chrome";v="134"',
-                "sec-ch-ua-mobile": "?0", "sec-ch-ua-platform": '"Windows"',
-                "sec-fetch-site": "cross-site", "sec-fetch-mode": "cors", "sec-fetch-dest": "video"
-            };
-            if (link.includes("tiktok")) return { ...base, "Referer": "https://www.tiktok.com/", "Origin": "https://www.tiktok.com" };
-            if (link.includes("twimg.com") || link.includes("twitter.com") || link.includes("x.com") || link.includes("video.twimg.com") || link.includes("pbs.twimg.com")) {
-                return { ...base, "Referer": "https://twitter.com/", "Origin": "https://twitter.com", "sec-fetch-site": "same-site" };
-            }
-            if (link.includes("instagram")) return { ...base, "Referer": "https://www.instagram.com/", "Origin": "https://www.instagram.com" };
-            return base;
-        }
+  const ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36";
+  
+  const baseHeaders = {
+    "User-Agent": ua,
+    "Accept": "*/*",
+    "Accept-Language": "en-US,en;q=0.9",
+    "sec-ch-ua": '"Not)A;Brand";v="99", "Chromium";v="134", "Google Chrome";v="134"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"',
+    "sec-fetch-site": "cross-site",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-dest": "video"
+  };
 
-        async function startDownload(link, filename) {
-            progressContainer.classList.remove('hidden'); progressFill.style.width = '0%';
-            addToast("Starting download...");
-            try {
-                const headers = getDownloadHeaders(link);
-                const response = await fetch(link, { method: 'GET', headers, cache: 'force-cache' });
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const contentLength = response.headers.get('content-length');
-                const reader = response.body.getReader();
-                let received = 0, chunks = [];
-                while (true) {
-                    const {done, value} = await reader.read();
-                    if (done) break;
-                    chunks.push(value); received += value.length;
-                    if (contentLength) progressFill.style.width = `${Math.round((received / contentLength) * 100)}%`;
-                }
-                const blob = new Blob(chunks);
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a"); a.href = url; a.download = filename;
-                document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-                addToast("Download complete!");
-            } catch (err) {
-                console.error(err);
-                addToast("Opening in new tab");
-                window.open(link, "_blank");
-            } finally {
-                setTimeout(() => { progressContainer.classList.add('hidden'); progressFill.style.width = '0%'; }, 1500);
-            }
-        }
+  if (link.includes("tiktok")) {
+    return { 
+      ...baseHeaders,
+      "Referer": "https://www.tiktok.com/",
+      "Origin": "https://www.tiktok.com"
+    };
+  }
+  if (link.includes("twimg.com") || link.includes("twitter.com") || link.includes("x.com") || 
+      link.includes("video.twimg.com") || link.includes("pbs.twimg.com")) {
+    return { 
+      ...baseHeaders,
+      "Referer": "https://twitter.com/",
+      "Origin": "https://twitter.com"
+    };
+  }
+  if (link.includes("instagram")) {
+    return { 
+      ...baseHeaders,
+      "Referer": "https://www.instagram.com/",
+      "Origin": "https://www.instagram.com"
+    };
+  }
+  return baseHeaders;
+}
 
+async function startDownload(link, filename) {
+  progressContainer.classList.remove('hidden'); 
+  progressFill.style.width = '0%';
+  addToast("Starting fast cached download...");
+
+  try {
+    const headers = getDownloadHeaders(link);
+    const response = await fetch(link, { 
+      method: 'GET', 
+      headers,
+      cache: 'force-cache' 
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const contentLength = response.headers.get('content-length');
+    const reader = response.body.getReader();
+    let received = 0, chunks = [];
+
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      chunks.push(value); 
+      received += value.length;
+      if (contentLength) {
+        const percent = Math.round((received / contentLength) * 100);
+        progressFill.style.width = `${percent}%`;
+      }
+    }
+
+    const blob = new Blob(chunks);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); 
+    a.href = url; 
+    a.download = filename;
+    document.body.appendChild(a); 
+    a.click(); 
+    document.body.removeChild(a); 
+    URL.revokeObjectURL(url);
+    addToast("Download complete!");
+  } catch (err) {
+    console.error("Download error:", err);
+    addToast("Download failed – opening in new tab");
+    window.open(link, "_blank");
+  } finally {
+    setTimeout(() => { 
+      progressContainer.classList.add('hidden'); 
+      progressFill.style.width = '0%'; 
+    }, 1500);
+  }
+}
         function renderVideoResult() {
             videoResult.classList.remove('hidden');
             thumbImg.src = videoData.thumbnail; thumbImg.classList.remove('hidden');
@@ -597,7 +633,7 @@
             formatsContainer.innerHTML = '';
             const playBtn = document.createElement('button');
             playBtn.className = 'w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold mb-6 shadow transition-all flex items-center justify-center gap-2';
-            playBtn.innerHTML = '▶ Play Preview in Browser';
+            playBtn.innerHTML = '▶ Play Preview in Browser (Highest Quality)';
             playBtn.onclick = () => playPreview(videoData.formats[0].link);
             formatsContainer.appendChild(playBtn);
             videoData.formats.forEach(f => {
@@ -608,7 +644,7 @@
                 formatsContainer.appendChild(btn);
             });
         }
-
+        function hideVideoResult() { videoResult.classList.add('hidden'); }
         function addToast(msg) { 
             const toast = document.createElement('div');
             toast.className = 'bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-2xl toast font-bold';
@@ -616,28 +652,47 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
+        // NEW: Live Demo Modal Handler – replaces the old silent paste behaviour
         function showDemoModal(sampleUrl) {
-            modalLinkDisplay.textContent = sampleUrl; demoModal.classList.remove('hidden');
+            modalLinkDisplay.textContent = sampleUrl;
+            demoModal.classList.remove('hidden');
         }
 
-        window.fillDemo = function(type) { 
+        // UPDATED fillDemo – now opens the “Use a real or live link” popup exactly as requested
+        // All original sample URLs are kept 100% unchanged (originality preserved)
+        window.fillDemo = function(type) {
             let sample = '';
-            if (type === 'youtube') sample = 'https://www.youtube.com/watch?v=9bZkp7q19f0';
-            else if (type === 'instagram') sample = 'https://www.instagram.com/reel/C8zqKzqP9oK/';
-            else if (type === 'facebook') sample = 'https://www.facebook.com/watch?v=123456789012345';
-            else if (type === 'tiktok') sample = 'https://www.tiktok.com/@khaby.lame/video/7212345678901234567';
-            else if (type === 'x') sample = 'https://twitter.com/IntelReap/status/1234567890';
-            else if (type === 'discord') sample = 'https://discord.com/channels/1050000000000000000/1050000000000000000/1234567890123456789';
-            else if (type === 'pinterest') sample = 'https://www.pinterest.com/pin/1234567890123456789/';
+
+            if (type === 'youtube') {
+                sample = 'https://www.youtube.com/watch?v=9bZkp7q19f0';
+            }
+            else if (type === 'instagram') {
+                sample = 'https://www.instagram.com/reel/C8zqKzqP9oK/';
+            }
+            else if (type === 'facebook') {
+                sample = 'https://www.facebook.com/watch?v=123456789012345';
+            }
+            else if (type === 'tiktok') {
+                sample = 'https://www.tiktok.com/@khaby.lame/video/7212345678901234567';
+            }
+            else if (type === 'x') {
+                sample = 'https://twitter.com/IntelReap/status/1234567890';
+            }
+            else if (type === 'discord') {
+                sample = 'https://discord.com/channels/1050000000000000000/1050000000000000000/1234567890123456789';
+            }
+            else if (type === 'pinterest') {
+                sample = 'https://www.pinterest.com/pin/1234567890123456789/';
+            }
+
             showDemoModal(sample);
-        };
+        }
 
         window.shareTool = function() {
             const url = window.location.href;
             if (navigator.share) navigator.share({ title: "VideoLoader", url });
             else navigator.clipboard.writeText(url).then(() => addToast("Link copied – share with friends!"));
-        };
-
+        }
         async function handlePaste() { 
             try {
                 const text = await navigator.clipboard.readText();
@@ -646,12 +701,10 @@
                 updateInputBorder(); updateSubmitButton(); hideError();
             } catch { addToast("Clipboard access denied. Paste manually."); }
         }
-
         function handleCancel() { 
             if (abortController) abortController.abort();
             loading = false; updateLoadingUI();
         }
-
         async function handleSubmit(e) {
             e.preventDefault();
             const processedUrl = extractUrl(currentUrl) || currentUrl.trim();
@@ -662,72 +715,79 @@
 
             loading = true; videoData = null; hideError(); hideVideoResult(); updateLoadingUI();
 
-            try {
-                const bodyData = {
-                    url: processedUrl,
-                    downloadMode: isAudioOnly ? "audio" : "auto",
-                    audioFormat: isAudioOnly ? "mp3" : "best",
-                    videoQuality: quality || "max",
-                    audioBitrate: "320",
-                    filenameStyle: "pretty",
-                    alwaysProxy: true,           // ← fixes many "Failed to fetch"
-                    tiktokFullAudio: isNoWatermark
-                };
+            let result = null;
+            if (processedUrl === lastUrl && lastData) {
+                result = lastData;
+            } else {
+                try {
+                    let endpoint = "/api/info";
+                    if (isAudioOnly) endpoint = "/api/mp3";
 
-                const res = await fetch(COBALT_API, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "Accept": "application/json" },
-                    body: JSON.stringify(bodyData),
-                    signal: abortController.signal
-                });
+                    const bodyData = { url: processedUrl, ...(noWatermarkCheckbox.checked ? { isNoTTWatermark: true } : {}) };
 
-                if (!res.ok) {
-                    const errJson = await res.json().catch(() => ({}));
-                    throw new Error(errJson.error?.code || errJson.error || `HTTP ${res.status}`);
+                    const res = await fetch(`${API_ENDPOINTS[0]}${endpoint}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(bodyData),
+                        signal: abortController.signal
+                    });
+
+                    if (!res.ok) {
+                        let errorText = `Server error ${res.status}`;
+                        try { const errJson = await res.json(); if (errJson.error) errorText = errJson.error; } catch {}
+                        throw new Error(errorText);
+                    }
+
+                    if (isAudioOnly) {
+                        const blob = await res.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        await startDownload(url, slugifyFilename("audio.mp3"));
+                        loading = false; updateLoadingUI(); return;
+                    }
+
+                    result = await res.json();
+                    if (result.error) throw new Error(result.error);
+
+                    lastUrl = processedUrl; lastData = result;
+                } catch (err) {
+                    if (err.name === "AbortError") showError("Request canceled");
+                    else {
+                        let msg = "Failed to process video: " + err.message;
+                        if (err.message.includes("Unsupported URL")) msg = "TikTok URL error: Use a direct video link.";
+                        if (err.message.includes("403")) msg = "Server blocked request (403). Try again.";
+                        showError(msg);
+                    }
+                    loading = false; updateLoadingUI(); return;
                 }
-
-                const result = await res.json();
-                if (result.status === "error") throw new Error(result.error?.code || result.error);
-
-                const title = result.title || result.filename || "Processed Video";
-                const thumbnail = getThumbnail(processedUrl, result);
-
-                let formats = [];
-                if (result.url) {
-                    formats = [{ label: isAudioOnly ? "High-Quality MP3" : "Max Quality", link: result.url, filename: slugifyFilename(title) }];
-                } else if (Array.isArray(result.picker) && result.picker.length > 0) {
-                    formats = result.picker.map(item => ({
-                        label: item.type ? item.type.toUpperCase() : "Media",
-                        link: item.url,
-                        filename: slugifyFilename(title + (item.type === "video" ? '.mp4' : '.jpg'))
-                    })).filter(f => f.link);
-                }
-
-                if (!formats.length) throw new Error("No download link available");
-
-                videoData = { title, thumbnail, formats };
-                renderVideoResult();
-            } catch (err) {
-                if (err.name === "AbortError") showError("Request canceled");
-                else {
-                    let msg = err.message || "Unknown error";
-                    if (msg.includes("youtube.login")) msg = "YouTube login error — session generator is now live. Try again in 10 seconds.";
-                    else if (msg.includes("fetch.fail")) msg = "Platform temporarily blocked — retry in 20 seconds.";
-                    else if (msg.includes("Unsupported")) msg = "Unsupported URL — try a different public video.";
-                    showError("Failed to process video: " + msg);
-                }
-            } finally {
-                loading = false; updateLoadingUI();
             }
-        }
 
+            let title = result.title || "Processed Video";
+            let formats = [];
+            if (Array.isArray(result.formats) && result.formats.length > 0) {
+                formats = result.formats.map(f => ({
+                    label: f.quality || "Download",
+                    link: f.url,
+                    filename: slugifyFilename(title + '.' + (f.ext || 'mp4'))
+                })).filter(f => f.link);
+            }
+
+            if (!formats.length) { showError("No download link available"); loading = false; updateLoadingUI(); return; }
+
+            videoData = {
+                title: title,
+                thumbnail: result.thumbnail || getThumbnail(processedUrl, result),
+                formats: formats
+            };
+
+            renderVideoResult();
+            loading = false; updateLoadingUI();
+        }
         function toggleDarkMode() { 
             darkMode = !darkMode;
             localStorage.setItem("darkMode", darkMode);
             document.documentElement.classList.toggle("dark", darkMode);
             darkToggle.textContent = darkMode ? "☀️ Light" : "🌙 Dark";
         }
-
         function init() {
             urlInput = document.getElementById('url-input');
             qualitySelect = document.getElementById('quality-select');
@@ -752,6 +812,7 @@
             modalLinkDisplay = document.getElementById('modal-link-display');
             modalCopyBtn = document.getElementById('modal-copy-btn');
             modalPasteBtn = document.getElementById('modal-paste-btn');
+            modalCloseBtn = document.getElementById('modal-close-btn'); // not used but kept for consistency
 
             document.documentElement.classList.toggle("dark", darkMode);
             darkToggle.textContent = darkMode ? "☀️ Light" : "🌙 Dark";
@@ -763,8 +824,6 @@
                 qualitySelect.disabled = isAudioOnly;
                 if (isAudioOnly) addToast("MP3 mode enabled 🎵");
             });
-            noWatermarkCheckbox.addEventListener('change', (e) => { isNoWatermark = e.target.checked; });
-
             document.getElementById('paste-btn').addEventListener('click', handlePaste);
             darkToggle.addEventListener('click', toggleDarkMode);
             cancelBtn.addEventListener('click', handleCancel);
