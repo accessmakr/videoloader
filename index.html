@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -474,7 +477,7 @@
 
     <!-- FULL UPGRADED JAVASCRIPT (entire upper script – all new features + original logic kept) -->
     <script>
-        const API_BASE = "https://videoloader-production.up.railway.app";  
+        const API_BASE = "https://cobalt-api-production-7354.up.railway.app";  
         const slugify = (str = '') => str.toString().toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 100);
         let isAudioOnly = false;
         const slugifyFilename = (filename) => {
@@ -576,56 +579,50 @@
 }
 
 async function startDownload(link, filename) {
-  progressContainer.classList.remove('hidden'); 
-  progressFill.style.width = '0%';
-  addToast("Starting fast cached download via proxy...");
+    progressContainer.classList.remove('hidden'); 
+    progressFill.style.width = '0%';
+    addToast("Downloading via Cobalt tunnel... ⚡");
 
-  try {
-    // Use server proxy instead of direct CDN link
-    const proxyUrl = `${API_BASE}/api/download?url=${encodeURIComponent(link)}&filename=${encodeURIComponent(filename)}`;
-    
-    const response = await fetch(proxyUrl, { 
-      method: 'GET'
-    });
+    try {
+        const response = await fetch(link);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const contentLength = response.headers.get('content-length');
+        const reader = response.body.getReader();
+        let received = 0, chunks = [];
 
-    const contentLength = response.headers.get('content-length');
-    const reader = response.body.getReader();
-    let received = 0, chunks = [];
+        while (true) {
+            const {done, value} = await reader.read();
+            if (done) break;
+            chunks.push(value);
+            received += value.length;
+            if (contentLength) {
+                const percent = Math.round((received / parseInt(contentLength)) * 100);
+                progressFill.style.width = `${percent}%`;
+            }
+        }
 
-    while (true) {
-      const {done, value} = await reader.read();
-      if (done) break;
-      chunks.push(value); 
-      received += value.length;
-      if (contentLength) {
-        const percent = Math.round((received / parseInt(contentLength)) * 100);
-        progressFill.style.width = `${percent}%`;
-      }
+        const blob = new Blob(chunks);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a"); 
+        a.href = url; 
+        a.download = filename;
+        document.body.appendChild(a); 
+        a.click(); 
+        document.body.removeChild(a); 
+        URL.revokeObjectURL(url);
+
+        addToast("✅ Download complete!");
+    } catch (err) {
+        console.error(err);
+        addToast("Opening direct link");
+        window.open(link, "_blank");
+    } finally {
+        setTimeout(() => { 
+            progressContainer.classList.add('hidden'); 
+            progressFill.style.width = '0%'; 
+        }, 1500);
     }
-
-    const blob = new Blob(chunks);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); 
-    a.href = url; 
-    a.download = filename;
-    document.body.appendChild(a); 
-    a.click(); 
-    document.body.removeChild(a); 
-    URL.revokeObjectURL(url);
-
-    addToast("Download complete!");
-  } catch (err) {
-    console.error("Download error:", err);
-    addToast("Proxy download failed – opening original link");
-    window.open(link, "_blank");
-  } finally {
-    setTimeout(() => { 
-      progressContainer.classList.add('hidden'); 
-      progressFill.style.width = '0%'; 
-    }, 1500);
-  }
 }
         function renderVideoResult() {
             videoResult.classList.remove('hidden');
@@ -707,82 +704,98 @@ async function startDownload(link, filename) {
             loading = false; updateLoadingUI();
         }
         async function handleSubmit(e) {
-            e.preventDefault();
-            const processedUrl = extractUrl(currentUrl) || currentUrl.trim();
-            if (!processedUrl || !isValidURL(processedUrl)) { showError("Paste a valid video URL"); return; }
+    e.preventDefault();
+    const processedUrl = extractUrl(currentUrl) || currentUrl.trim();
+    if (!processedUrl || !isValidURL(processedUrl)) {
+        showError("Paste a valid video URL");
+        return;
+    }
 
-            if (abortController) abortController.abort();
-            abortController = new AbortController();
+    if (abortController) abortController.abort();
+    abortController = new AbortController();
 
-            loading = true; videoData = null; hideError(); hideVideoResult(); updateLoadingUI();
+    loading = true; videoData = null; hideError(); hideVideoResult(); updateLoadingUI();
 
-            let result = null;
-            if (processedUrl === lastUrl && lastData) {
-                result = lastData;
-            } else {
-                try {
-                    let endpoint = "/api/info";
-                    if (isAudioOnly) endpoint = "/api/mp3";
+    try {
+        const body = {
+            url: processedUrl,
+        };
 
-                    const bodyData = { url: processedUrl, ...(noWatermarkCheckbox.checked ? { isNoTTWatermark: true } : {}) };
-
-                    const res = await fetch(`${API_BASE}${endpoint}`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(bodyData),
-                        signal: abortController.signal
-                    });
-
-                    if (!res.ok) {
-                        let errorText = `Server error ${res.status}`;
-                        try { const errJson = await res.json(); if (errJson.error) errorText = errJson.error; } catch {}
-                        throw new Error(errorText);
-                    }
-
-                    if (isAudioOnly) {
-                        const blob = await res.blob();
-                        const url = window.URL.createObjectURL(blob);
-                        await startDownload(url, slugifyFilename("audio.mp3"));
-                        loading = false; updateLoadingUI(); return;
-                    }
-
-                    result = await res.json();
-                    if (result.error) throw new Error(result.error);
-
-                    lastUrl = processedUrl; lastData = result;
-                } catch (err) {
-                    if (err.name === "AbortError") showError("Request canceled");
-                    else {
-                        let msg = "Failed to process video: " + err.message;
-                        if (err.message.includes("Unsupported URL")) msg = "TikTok URL error: Use a direct video link.";
-                        if (err.message.includes("403")) msg = "Server blocked request (403). Try again.";
-                        showError(msg);
-                    }
-                    loading = false; updateLoadingUI(); return;
-                }
-            }
-
-            let title = result.title || "Processed Video";
-            let formats = [];
-            if (Array.isArray(result.formats) && result.formats.length > 0) {
-                formats = result.formats.map(f => ({
-                    label: f.quality || "Download",
-                    link: f.url,
-                    filename: slugifyFilename(title + '.' + (f.ext || 'mp4'))
-                })).filter(f => f.link);
-            }
-
-            if (!formats.length) { showError("No download link available"); loading = false; updateLoadingUI(); return; }
-
-            videoData = {
-                title: title,
-                thumbnail: result.thumbnail || getThumbnail(processedUrl, result),
-                formats: formats
-            };
-
-            renderVideoResult();
-            loading = false; updateLoadingUI();
+        // Audio-only mode
+        if (isAudioOnly) {
+            body.downloadMode = "audio";
+            body.audioFormat = "mp3";
+            body.audioBitrate = "320";
+        } 
+        // Video mode
+        else {
+            body.videoQuality = qualitySelect.value || "max";
+            // TikTok no-watermark: Cobalt usually removes it automatically now
         }
+
+        const res = await fetch(`${API_BASE}/`, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            },
+            body: JSON.stringify(body),
+            signal: abortController.signal
+        });
+
+        if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+        const result = await res.json();
+
+        if (result.status === "error") {
+            throw new Error(result.error?.code || result.error || "Processing failed");
+        }
+
+        let title = result.title || result.metadata?.title || "VideoLoader Download";
+        let thumbnail = result.thumbnail || getThumbnail(processedUrl, result);
+
+        let formats = [];
+
+        if (result.url) {
+            // Most common case (tunnel/redirect)
+            formats.push({
+                label: isAudioOnly ? "🎵 MP3 Audio" : `${qualitySelect.value} Video`,
+                link: result.url,
+                filename: result.filename || slugifyFilename(title + (isAudioOnly ? '.mp3' : '.mp4'))
+            });
+        } 
+        else if (result.picker && result.picker.length > 0) {
+            // Gallery / slideshow / multiple files
+            result.picker.forEach((item, i) => {
+                const ext = item.type === "photo" ? "jpg" : "mp4";
+                formats.push({
+                    label: `${item.type} ${i+1}`,
+                    link: item.url,
+                    filename: `media-${i+1}.${ext}`
+                });
+            });
+        } 
+        else if (result.tunnel && result.tunnel.length > 0) {
+            // Local-processing fallback (some audio/video)
+            formats.push({
+                label: isAudioOnly ? "🎵 MP3 Audio" : "Video",
+                link: result.tunnel[0],
+                filename: result.output?.filename || slugifyFilename(title + (isAudioOnly ? '.mp3' : '.mp4'))
+            });
+        }
+
+        if (!formats.length) throw new Error("No download link available");
+
+        videoData = { title, thumbnail, formats };
+        renderVideoResult();
+
+    } catch (err) {
+        if (err.name === "AbortError") showError("Request canceled");
+        else showError(err.message || "Failed to process video – try again");
+    } finally {
+        loading = false; updateLoadingUI();
+    }
+}
         function toggleDarkMode() { 
             darkMode = !darkMode;
             localStorage.setItem("darkMode", darkMode);
